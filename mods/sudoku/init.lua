@@ -1,23 +1,34 @@
+
+-- Needs to be kept due to some hacks.
+minetest.register_node(":default:dirt", {
+	description = "Hack node",
+	tiles = {"logo.png"},
+})
+
+minetest.register_alias("mapgen_stone", "air")
+minetest.register_alias("mapgen_water_source", "air")
+
+-- Hand
+
+local digtime = 42
+minetest.register_item(":", {
+	type = "none",
+	wield_image = "wieldhand.png",
+	wield_scale = {x = 1, y = 1, z = 2.5},
+	range = 15,
+	tool_capabilities = {
+		max_drop_level = 3,
+		groupcaps = {
+			snappy  = {times = {digtime, digtime, digtime}, uses = 0, maxlevel = 256},
+		},
+	}
+})
+
+
 local hud_levels = {}
 
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
-	player:hud_add({
-		hud_elem_type = "text",
-		position = {x=0, y=0.85},
-		offset = {x=0, y=10},
-		alignment = {x=1, y=0},
-		number = 0xFFFFFF ,
-		text = "For Minetest 	  :  5.4.0",
-	})
-	player:hud_add({
-		hud_elem_type = "text",
-		position = {x=0, y=0.85},
-		offset = {x=0, y=30},
-		alignment = {x=1, y=0},
-		number = 0xFFFFFF ,
-		text = "Game Version	 :  1.9.5",
-	})
 	hud_levels[name] = player:hud_add({
 		hud_elem_type = "text",
 		position = {x=0, y=0.85},
@@ -29,18 +40,6 @@ minetest.register_on_joinplayer(function(player)
 end)
 
 local map_version = 1
-
-minetest.register_on_joinplayer(function(player)
-	player:set_inventory_formspec("")
-	if player:get_player_name() == "singleplayer" then
-	else
-		minetest.kick_player(player:get_player_name(), "you can play sudoku only as 'singleplayer'")
-	end
-end)
-
-minetest.register_on_joinplayer(function(player)
-	player:set_inventory_formspec("")
-end)
 
 minetest.register_globalstep(function(dtime)
 	local players = minetest.get_connected_players()
@@ -136,34 +135,21 @@ minetest.register_on_player_hpchange(function(player, hp_change)
 end, true)
 
 minetest.register_node("sudoku:desert",{
-	description = "Desert",
-	tiles = {"default_desert_sand.png"},
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+	description = "Desert Sand",
+	tiles = {"sudoku_desert_sand.png"},
 })
 minetest.register_node("sudoku:black",{
-	description = "Black",
-	tiles = {"wool_black.png"},
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+	description = "Black Tile",
+	tiles = {"sudoku_black_tile.png"},
 })
 minetest.register_node("sudoku:gray",{
-	description = "Gray",
-	tiles = {"default_sand.png"},
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+	description = "Gray Tile",
+	tiles = {"sudoku_gray_tile.png"},
 })
-minetest.register_node("sudoku:glass", {
-	description = "Obsidian Glass",
-	drawtype = "glasslike_framed_optional",
-	tiles = {"default_obsidian_glass.png", "default_obsidian_glass_detail.png"},
-	paramtype = "light",
-	paramtype2 = "glasslikeliquidlevel",
-	is_ground_content = false,
-	sunlight_propagates = true,
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
-})
+
 minetest.register_node("sudoku:wall",{
-	description = "Wall",
-	tiles = {"default_mossycobble.png"},
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+	description = "Black Tile (Wall)",
+	tiles = {"sudoku_black_tile.png"},
 })
 minetest.register_node("sudoku:meselamp", {
 	description = "Mese Lamp",
@@ -172,21 +158,19 @@ minetest.register_node("sudoku:meselamp", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	is_ground_content = false,
-	--groups = {cracky = 3, oddly_breakable_by_hand = 3},
 	light_source = 15,
 })
 for i=1,9 do
 	minetest.register_node("sudoku:"..i,{
 		description = ""..i,
 		tiles = {"sudoku_1_"..i..".png"},
-		--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
 	})
 end
 for i=1,9 do
 	minetest.register_node("sudoku:n_"..i,{
 		description = ""..i,
 		tiles = {"sudoku_2_"..i..".png"},
-		groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+		groups = {snappy=1},
 		after_place_node = function(pos, placer, itemstack, pointed_thing)
 			if Place(placer,i,pos) == false or pos.z ~= -76 then
 				minetest.set_node(pos, {name="air"})
@@ -1380,7 +1364,7 @@ w3.get_formspec = function(player, pos)
 	return formspec
 end
 minetest.register_node("sudoku:new_w1",{
-	tiles  = {"default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png^sudoku_new_w1.png"},
+	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w1.png"},
 	description = "New",
 	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
 	on_punch = function(pos, node, player, pointed_thing)
@@ -1404,7 +1388,7 @@ minetest.register_node("sudoku:new_w1",{
 	end,
 })
 minetest.register_node("sudoku:new_w2",{
-	tiles  = {"default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png^sudoku_new_w2.png"},
+	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w2.png"},
 	description = "New",
 	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
 	on_punch = function(pos, node, player, pointed_thing)
@@ -1430,7 +1414,7 @@ minetest.register_node("sudoku:new_w2",{
 	end,
 })
 minetest.register_node("sudoku:new_w3",{
-	tiles  = {"default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png^sudoku_new_w3.png"},
+	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w3.png"},
 	description = "New",
 	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
 	on_punch = function(pos, node, player, pointed_thing)
@@ -1468,7 +1452,7 @@ minetest.register_node("sudoku:new_w3",{
 	end,
 })
 minetest.register_node("sudoku:new_w4",{
-	tiles  = {"default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png^sudoku_new_w4.png"},
+	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w4.png"},
 	description = "New",
 	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
 	on_punch = function(pos, node, player, pointed_thing)
@@ -1486,7 +1470,7 @@ minetest.register_node("sudoku:new_w4",{
 	end,
 })
 minetest.register_node("sudoku:new_w5",{
-	tiles  = {"default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png^sudoku_new_w5.png"},
+	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w5.png"},
 	description = "New",
 	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
 	on_punch = function(pos, node, player, pointed_thing)
@@ -1494,7 +1478,7 @@ minetest.register_node("sudoku:new_w5",{
 	end,
 })
 minetest.register_node("sudoku:new_ws",{
-	tiles  = {"default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png^sudoku_new_w6.png"},
+	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w6.png"},
 	description = "New",
 	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
 	on_punch = function(pos, node, player, pointed_thing)
@@ -1502,7 +1486,7 @@ minetest.register_node("sudoku:new_ws",{
 	end,
 })
 minetest.register_node("sudoku:finisch",{
-	tiles  = {"default_silver_sandstone_block.png^sudoku_finisch.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png","default_silver_sandstone_block.png"},
+	tiles  = {"sudoku_silver_block.png^sudoku_finisch.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png"},
 	description = "New",
 	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
 	on_punch = function(pos, node, player, pointed_thing)
