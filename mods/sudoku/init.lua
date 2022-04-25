@@ -163,13 +163,12 @@ minetest.register_node("sudoku:meselamp", {
 for i=1,9 do
 	minetest.register_node("sudoku:"..i,{
 		description = ""..i,
-		tiles = {"sudoku_1_"..i..".png"},
+		tiles = {"sudoku_digits.png^[sheet:9x2:"..(i-1)..",0"},
 	})
-end
-for i=1,9 do
+
 	minetest.register_node("sudoku:n_"..i,{
 		description = ""..i,
-		tiles = {"sudoku_2_"..i..".png"},
+		tiles = {"sudoku_digits.png^[sheet:9x2:"..(i-1)..",1"},
 		groups = {snappy=1},
 		after_place_node = function(pos, placer, itemstack, pointed_thing)
 			if Place(placer,i,pos) == false or pos.z ~= -76 then
