@@ -24,6 +24,7 @@ minetest.register_item(":", {
 	}
 })
 
+levels = dofile(minetest.get_modpath('sudoku')..'/levels.lua')
 
 local hud_levels = {}
 
@@ -179,18 +180,21 @@ for i=1,9 do
 		end,
 	})
 end
-function New(player,page)
+function New(player,page1,page2)
 	local player_inv = player:get_inventory()
 	player_inv:set_list("main", nil)
 	player_inv:set_size("main", 32)
 	lv = io.open(minetest.get_worldpath().."/level1.txt", "r")
 	local level = lv:read("*l")
 	lv:close()
-	local lv = io.open(minetest.get_modpath("sudoku").."/lv"..page..".txt", "r")
+	print(page1)
+	print(page2)
 	local ar1 = {}
 	local ar2 = {}
 	for i=1,9 do
-		ar1[i] = lv:read("*l")
+		for s in levels[page1][page2]:gmatch("[^\r\n]+") do
+			table.insert(ar1, s)
+		end
 	end
 	for i=10,28 do
 		for k=9,27 do
@@ -1503,7 +1507,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if formname == "w11" or formname == "w12" or formname == "w13" or formname == "w14" or formname == "w15" or formname == "w16" or formname == "w17" then
 		for k, v in pairs(fields) do
 			if tonumber(v) ~= nil then
-				New(player,"1_"..v)
+				New(player,1,tonumber(v))
 				player_inv:set_stack("l",  1, "default:dirt "..v)
 				player_inv:set_stack("ll", 1, "default:dirt 1")
 			end
@@ -1512,7 +1516,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if formname == "w21" or formname == "w22" or formname == "w23" or formname == "w24" or formname == "w25" or formname == "w26" or formname == "w27" or formname == "w28" then
 		for k, v in pairs(fields) do
 			if tonumber(v) ~= nil then
-				New(player,"2_"..v)
+				New(player,2,tonumber(v))
 				player_inv:set_stack("l",  2, "default:dirt "..v)
 				player_inv:set_stack("ll", 1, "default:dirt 2")
 			end
@@ -1521,7 +1525,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if formname == "w31" or formname == "w32" or formname == "w33" or formname == "w34" or formname == "w35" or formname == "w36" or formname == "w37" or formname == "w38" or formname == "w39" or formname == "w310" or formname == "w311" or formname == "w312" or formname == "w313" or formname == "w314" then
 		for k, v in pairs(fields) do
 			if tonumber(v) ~= nil then
-				New(player,"3_"..v)
+				New(player,3,tonumber(v))
 				player_inv:set_stack("l",  3, "default:dirt "..v)
 				player_inv:set_stack("ll", 1, "default:dirt 3")
 			end
@@ -1530,7 +1534,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if formname == "w41" or formname == "w42" or formname == "w43" or formname == "w44" then
 		for k, v in pairs(fields) do
 			if tonumber(v) ~= nil then
-				New(player,"4_"..v)
+				New(player,4,tonumber(v))
 				player_inv:set_stack("l",  4, "default:dirt "..v)
 				player_inv:set_stack("ll", 1, "default:dirt 4")
 			end
