@@ -1475,23 +1475,14 @@ minetest.register_node("sudoku:new_w4",{
 minetest.register_node("sudoku:new_w5",{
 	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w5.png"},
 	description = "New",
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
 	on_punch = function(pos, node, player, pointed_thing)
 		minetest.show_formspec(player:get_player_name(), "w3" , w3.get_formspec(player))
 	end,
 })
-minetest.register_node("sudoku:new_ws",{
-	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w6.png"},
-	description = "New",
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
-	on_punch = function(pos, node, player, pointed_thing)
-		minetest.show_formspec(player:get_player_name(), "w3" , w3.get_formspec(player))
-	end,
-})
+
 minetest.register_node("sudoku:finisch",{
-	tiles  = {"sudoku_silver_block.png^sudoku_finisch.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png"},
+	tiles  = {"sudoku_silver_block.png^sudoku_finish.png","sudoku_silver_block.png"},
 	description = "New",
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
 	on_punch = function(pos, node, player, pointed_thing)
 		Finisch(player)
 	end,
