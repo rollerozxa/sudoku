@@ -488,7 +488,7 @@ function Place(player,number,pos)
 		dd = 1
 	end
 	if dd == 1 then
-		minetest.chat_send_all("number already exists")
+		sudoku_hud_message.error(player, "Number already exists!")
 		return false
 	else
 		return true
@@ -662,7 +662,7 @@ function Finisch(player)
 		dd = 1
 	end
 	if dd == 1 then
-		minetest.chat_send_all("not correct")
+		sudoku_hud_message.error(player, "Sudoku is not complete.")
 	else
 		local player_inv = player:get_inventory()
 		local ll = player_inv:get_stack("ll", 1):get_count()
@@ -670,7 +670,7 @@ function Finisch(player)
 		lv = io.open(minetest.get_worldpath().."/level"..ll..".txt", "r")
 		local level = lv:read("*l")
 		lv:close()
-		minetest.chat_send_all("level completed")
+		sudoku_hud_message.success(player, "Sudoku complete!")
 		if tonumber(level) == tonumber(level2) then
 			le = io.open(minetest.get_worldpath().."/level"..ll..".txt", "w")
 			le:write(level+1)
