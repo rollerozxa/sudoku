@@ -40,6 +40,8 @@ minetest.register_on_joinplayer(function(player)
 		number = 0xFFFFFF ,
 		text = "Level: /",
 	})
+
+	minetest.sound_play({name="sudoku_loop"}, {loop=true})
 end)
 
 local map_version = 1
