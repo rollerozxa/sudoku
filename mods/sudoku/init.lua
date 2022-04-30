@@ -26,6 +26,8 @@ minetest.register_item(":", {
 
 levels = dofile(minetest.get_modpath('sudoku')..'/levels.lua')
 
+local storage = minetest.get_mod_storage()
+
 local hud_levels = {}
 
 minetest.register_on_joinplayer(function(player)
@@ -56,6 +58,7 @@ minetest.register_globalstep(function(dtime)
 		end
 	end
 end)
+
 function file_check(file_name)
 	local file_found=io.open(file_name, "r")
 	if file_found==nil then
@@ -65,61 +68,46 @@ function file_check(file_name)
 	end
 	return file_found
 end
+
+function compat()
+	for i = 1, 5, 1 do
+		if file_check(minetest.get_worldpath().."/level"..i..".txt") then
+			local lv = io.open(minetest.get_worldpath().."/level"..i..".txt", "r")
+			local value = lv:read("*l")
+			lv:close()
+			storage:set_int("world_"..i, value)
+			os.remove(minetest.get_worldpath().."/level"..i..".txt")
+		end
+	end
+
+	local verfile = minetest.get_worldpath().."/Map_Version.txt"
+	if file_check(verfile) then
+		storage:set_int("mapversion", 1)
+		os.remove(verfile)
+	end
+end
+
 minetest.register_on_joinplayer(function(player)
 	local override_table = player:get_physics_override()
 	override_table.new_move = false
 	override_table.sneak_glitch = true
 	player:set_physics_override(override_table)
-	minetest.setting_set("time_speed", "0")
 	minetest.set_timeofday(0.5)
-	minetest.setting_set("node_highlighting", "box")
 	player:hud_set_hotbar_itemcount(9)
-	if file_check(minetest.get_worldpath().."/level1.txt") == true then
-	else
-		file = io.open(minetest.get_worldpath().."/level1.txt", "w")
-		file:write("1")
-		file:close()
+
+	compat()
+
+	for i = 1, 5, 1 do
+		local key = "world_"..i
+		if storage:get_int(key) == 0 then
+			storage:set_int(key, 1)
+		end
 	end
-	if file_check(minetest.get_worldpath().."/level2.txt") == true then
-	else
-		file = io.open(minetest.get_worldpath().."/level2.txt", "w")
-		file:write("1")
-		file:close()
-	end
-	if file_check(minetest.get_worldpath().."/level3.txt") == true then
-	else
-		file = io.open(minetest.get_worldpath().."/level3.txt", "w")
-		file:write("1")
-		file:close()
-	end
-	if file_check(minetest.get_worldpath().."/level4.txt") == true then
-	else
-		file = io.open(minetest.get_worldpath().."/level4.txt", "w")
-		file:write("1")
-		file:close()
-	end
-	if file_check(minetest.get_worldpath().."/level5.txt") == true then
-	else
-		file = io.open(minetest.get_worldpath().."/level5.txt", "w")
-		file:write("1")
-		file:close()
-	end
-	if file_check(minetest.get_worldpath().."/Map_Version.txt") ~= true  then
+
+	if storage:get_int("mapversion") == 0 then
 		minetest.place_schematic({ x = 9, y = 7, z = -93 }, minetest.get_modpath("sudoku").."/schematics/sector1.mts","0")
 		player:setpos({x=19, y=8, z=-88})
-		file = io.open(minetest.get_worldpath().."/Map_Version.txt", "w")
-		file:write(map_version)
-		file:close()
-	end
-	file = io.open(minetest.get_worldpath().."/Map_Version.txt", "r")
-	local map_ver = file:read("*l")
-	file:close()
-	if tonumber(map_ver) < map_version then
-		minetest.place_schematic({ x = 9, y = 7, z = -93 }, minetest.get_modpath("sudoku").."/schematics/sector1.mts","0")
-		player:setpos({x=19, y=8, z=-88})
-		file = io.open(minetest.get_worldpath().."/Map_Version.txt", "w")
-		file:write(map_version)
-		file:close()
+		storage:set_int("mapversion", 1)
 	end
 end)
 minetest.register_on_newplayer(function(player)
@@ -180,13 +168,12 @@ for i=1,9 do
 		end,
 	})
 end
+
 function New(player,page1,page2)
 	local player_inv = player:get_inventory()
 	player_inv:set_list("main", nil)
 	player_inv:set_size("main", 32)
-	lv = io.open(minetest.get_worldpath().."/level1.txt", "r")
-	local level = lv:read("*l")
-	lv:close()
+
 	print(page1)
 	print(page2)
 	local ar1 = {}
@@ -664,17 +651,14 @@ function Finisch(player)
 	if dd == 1 then
 		sudoku_hud_message.error(player, "Sudoku is not complete.")
 	else
-		local player_inv = player:get_inventory()
-		local ll = player_inv:get_stack("ll", 1):get_count()
-		local level2 = player_inv:get_stack("l", ll):get_count()
-		lv = io.open(minetest.get_worldpath().."/level"..ll..".txt", "r")
-		local level = lv:read("*l")
-		lv:close()
 		sudoku_hud_message.success(player, "Sudoku complete!")
-		if tonumber(level) == tonumber(level2) then
-			le = io.open(minetest.get_worldpath().."/level"..ll..".txt", "w")
-			le:write(level+1)
-			le:close()
+		local player_inv = player:get_inventory()
+
+		local world = player_inv:get_stack("ll", 1):get_count()
+		local curlevel = player_inv:get_stack("l", ll):get_count()
+
+		if storage:get_int("world_"..world) == curlevel then
+			storage:set_int("world_"..world, level+1)
 		end
 	end
 end
@@ -769,9 +753,7 @@ w11.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level1.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_1')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/160]"
 		formspec = formspec..lvbut(0,25,level2)
@@ -786,9 +768,7 @@ w12.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level1.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_1')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/160]"
 		formspec = formspec.."button[1.5,6;1,1;waa;<]"
@@ -804,9 +784,7 @@ w13.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level1.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_1')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/160]"
 		formspec = formspec.."button[1.5,6;1,1;wab;<]"
@@ -822,9 +800,7 @@ w14.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level1.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_1')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/160]"
 		formspec = formspec.."button[1.5,6;1,1;wac;<]"
@@ -840,9 +816,7 @@ w15.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level1.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_1')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/160]"
 		formspec = formspec.."button[1.5,6;1,1;wad;<]"
@@ -858,9 +832,7 @@ w16.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level1.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_1')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/160]"
 		formspec = formspec.."button[1.5,6;1,1;wae;<]"
@@ -876,9 +848,7 @@ w17.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level1.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_1')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/160]"
 		formspec = formspec.."button[1.5,6;1,1;waf;<]"
@@ -894,9 +864,7 @@ w21.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level2.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_2')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/190]"
 		formspec = formspec..lvbut(0,25,level2)
@@ -911,9 +879,7 @@ w22.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level2.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_2')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/190]"
 		formspec = formspec.."button[1.5,6;1,1;wba;<]"
@@ -929,9 +895,7 @@ w23.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level2.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_2')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/190]"
 		formspec = formspec.."button[1.5,6;1,1;wbb;<]"
@@ -947,9 +911,7 @@ w24.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level2.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_2')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/190]"
 		formspec = formspec.."button[1.5,6;1,1;wbc;<]"
@@ -965,9 +927,7 @@ w25.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level2.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_2')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/190]"
 		formspec = formspec.."button[1.5,6;1,1;wbd;<]"
@@ -983,9 +943,7 @@ w26.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level2.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_2')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/190]"
 		formspec = formspec.."button[1.5,6;1,1;wbe;<]"
@@ -1001,9 +959,7 @@ w27.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level2.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_2')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/190]"
 		formspec = formspec.."button[1.5,6;1,1;wbf;<]"
@@ -1019,9 +975,7 @@ w28.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level2.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_2')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/190]"
 		formspec = formspec.."button[1.5,6;1,1;wbg;<]"
@@ -1037,9 +991,7 @@ w31.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec..lvbut(0,25,level2)
@@ -1054,9 +1006,7 @@ w32.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wca;<]"
@@ -1072,9 +1022,7 @@ w33.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wcb;<]"
@@ -1090,9 +1038,7 @@ w34.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wcc;<]"
@@ -1108,9 +1054,7 @@ w35.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wcd;<]"
@@ -1126,9 +1070,7 @@ w36.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wce;<]"
@@ -1144,9 +1086,7 @@ w37.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wcf;<]"
@@ -1162,9 +1102,7 @@ w38.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wcg;<]"
@@ -1180,9 +1118,7 @@ w39.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wch;<]"
@@ -1198,9 +1134,7 @@ w310.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wci;<]"
@@ -1216,9 +1150,7 @@ w311.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wcj;<]"
@@ -1234,9 +1166,7 @@ w312.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wck;<]"
@@ -1252,9 +1182,7 @@ w313.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wcl;<]"
@@ -1270,9 +1198,7 @@ w314.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level3.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_3')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/333]"
 		formspec = formspec.."button[1.5,6;1,1;wcm;<]"
@@ -1288,9 +1214,7 @@ w41.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level4.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_4')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/100]"
 		formspec = formspec..lvbut(0,25,level2)
@@ -1305,9 +1229,7 @@ w42.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level4.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_4')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/100]"
 		formspec = formspec.."button[1.5,6;1,1;wda;<]"
@@ -1323,9 +1245,7 @@ w43.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level4.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_4')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/100]"
 		formspec = formspec.."button[1.5,6;1,1;wdb;<]"
@@ -1341,9 +1261,7 @@ w44.get_formspec = function(player, pos)
 		return
 	end
 	local player_inv = player:get_inventory()
-	lv = io.open(minetest.get_worldpath().."/level4.txt", "r")
-	local level2 = lv:read("*l")
-	lv:close()
+	local level2 = storage:get_int('world_4')
 	formspec = "size[5,6.5]"
 		.."label[0,0;World Level:     "..(tonumber(level2)-1).."/100]"
 		formspec = formspec.."button[1.5,6;1,1;wdc;<]"
