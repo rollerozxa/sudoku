@@ -25,6 +25,7 @@ minetest.register_item(":", {
 })
 
 levels = dofile(minetest.get_modpath('sudoku')..'/levels.lua')
+dofile(minetest.get_modpath('sudoku')..'/compat.lua')
 
 local storage = minetest.get_mod_storage()
 
@@ -69,24 +70,6 @@ function file_check(file_name)
 		file_found=true
 	end
 	return file_found
-end
-
-function compat()
-	for i = 1, 5, 1 do
-		if file_check(minetest.get_worldpath().."/level"..i..".txt") then
-			local lv = io.open(minetest.get_worldpath().."/level"..i..".txt", "r")
-			local value = lv:read("*l")
-			lv:close()
-			storage:set_int("world_"..i, value)
-			os.remove(minetest.get_worldpath().."/level"..i..".txt")
-		end
-	end
-
-	local verfile = minetest.get_worldpath().."/Map_Version.txt"
-	if file_check(verfile) then
-		storage:set_int("mapversion", 1)
-		os.remove(verfile)
-	end
 end
 
 minetest.register_on_joinplayer(function(player)
@@ -164,7 +147,6 @@ for i=1,9 do
 		after_place_node = function(pos, placer, itemstack, pointed_thing)
 			if Place(placer,i,pos) == false or pos.z ~= -76 then
 				minetest.set_node(pos, {name="air"})
-				local player_inv = placer:get_inventory()
 				return itemstack
 			end
 		end,
@@ -174,10 +156,8 @@ end
 function New(player,page1,page2)
 	local player_inv = player:get_inventory()
 	player_inv:set_list("main", nil)
-	player_inv:set_size("main", 32)
+	player_inv:set_size("main", 9)
 
-	print(page1)
-	print(page2)
 	local ar1 = {}
 	local ar2 = {}
 	for i=1,9 do
@@ -480,184 +460,24 @@ function Place(player,number,pos)
 		sudoku_hud_message.error(player, "Number already exists!")
 		return false
 	else
+		checkCompletion(player)
 		return true
 	end
 end
-function Finisch(player)
-	local dd = 0
-	local ar = {}
-	for i=14,24 do
-		local d = 0
-		local temp = ""
-		for k=9,19 do
-			temp = temp..Fi(i,k)
-		end
-		ar[i-13] = temp
-	end
-	for i=1,3 do
-		if string.find(ar[i], "1") and string.find(ar[i], "2") and string.find(ar[i], "3") and string.find(ar[i], "4") and string.find(ar[i], "5") and string.find(ar[i], "6") and string.find(ar[i], "7") and string.find(ar[i], "8") and string.find(ar[i], "9") then
-		else
-			dd = 1
-		end
-	end
-	for i=5,7 do
-		if string.find(ar[i], "1") and string.find(ar[i], "2") and string.find(ar[i], "3") and string.find(ar[i], "4") and string.find(ar[i], "5") and string.find(ar[i], "6") and string.find(ar[i], "7") and string.find(ar[i], "8") and string.find(ar[i], "9") then
-		else
-			dd = 1
-		end
-	end
-	for i=9,11 do
-		if string.find(ar[i], "1") and string.find(ar[i], "2") and string.find(ar[i], "3") and string.find(ar[i], "4") and string.find(ar[i], "5") and string.find(ar[i], "6") and string.find(ar[i], "7") and string.find(ar[i], "8") and string.find(ar[i], "9") then
-		else
-			dd = 1
-		end
-	end
-	local ar = {}
-	for k=9,19 do
-		local d = 0
-		local temp = ""
-		for i=14,24 do
-			temp = temp..Fi(i,k)
-		end
-		ar[k-8] = temp
-	end
-	for i=1,3 do
-		if string.find(ar[i], "1") and string.find(ar[i], "2") and string.find(ar[i], "3") and string.find(ar[i], "4") and string.find(ar[i], "5") and string.find(ar[i], "6") and string.find(ar[i], "7") and string.find(ar[i], "8") and string.find(ar[i], "9") then
-		else
-			dd = 1
-		end
-	end
-	for i=5,7 do
-		if string.find(ar[i], "1") and string.find(ar[i], "2") and string.find(ar[i], "3") and string.find(ar[i], "4") and string.find(ar[i], "5") and string.find(ar[i], "6") and string.find(ar[i], "7") and string.find(ar[i], "8") and string.find(ar[i], "9") then
-		else
-			dd = 1
-		end
-	end
-	for i=9,11 do
-		if string.find(ar[i], "1") and string.find(ar[i], "2") and string.find(ar[i], "3") and string.find(ar[i], "4") and string.find(ar[i], "5") and string.find(ar[i], "6") and string.find(ar[i], "7") and string.find(ar[i], "8") and string.find(ar[i], "9") then
-		else
-			dd = 1
-		end
+
+function checkCompletion(player)
+	local player_inv = player:get_inventory()
+	local total_items = 0
+	for i = 1, 9, 1 do
+		local slot = player_inv:get_stack("main", i)
+		total_items = total_items + slot:get_count()
 	end
 
-	local ar = {}
-	local temp = ""
-	for k=9,11 do
-		local d = 0
-		for i=14,16 do
-			temp = temp..Fi(i,k)
-		end
-	end
-	if string.find(temp, "1") and string.find(temp, "2") and string.find(temp, "3") and string.find(temp, "4") and string.find(temp, "5") and string.find(temp, "6") and string.find(temp, "7") and string.find(temp, "8") and string.find(temp, "9") then
-	else
-		dd = 1
-	end
-	local ar = {}
-	local temp = ""
-	for k=9,11 do
-		local d = 0
-		for i=18,20 do
-			temp = temp..Fi(i,k)
-		end
-	end
-	if string.find(temp, "1") and string.find(temp, "2") and string.find(temp, "3") and string.find(temp, "4") and string.find(temp, "5") and string.find(temp, "6") and string.find(temp, "7") and string.find(temp, "8") and string.find(temp, "9") then
-	else
-		dd = 1
-	end
-	local ar = {}
-	local temp = ""
-	for k=9,11 do
-		local d = 0
-		for i=22,24 do
-			temp = temp..Fi(i,k)
-		end
-	end
-	if string.find(temp, "1") and string.find(temp, "2") and string.find(temp, "3") and string.find(temp, "4") and string.find(temp, "5") and string.find(temp, "6") and string.find(temp, "7") and string.find(temp, "8") and string.find(temp, "9") then
-	else
-		dd = 1
-	end
-
-	local ar = {}
-	local temp = ""
-	for k=13,15 do
-		local d = 0
-		for i=14,16 do
-			temp = temp..Fi(i,k)
-		end
-	end
-	if string.find(temp, "1") and string.find(temp, "2") and string.find(temp, "3") and string.find(temp, "4") and string.find(temp, "5") and string.find(temp, "6") and string.find(temp, "7") and string.find(temp, "8") and string.find(temp, "9") then
-	else
-		dd = 1
-	end
-	local ar = {}
-	local temp = ""
-	for k=13,15 do
-		local d = 0
-		for i=18,20 do
-			temp = temp..Fi(i,k)
-		end
-	end
-	if string.find(temp, "1") and string.find(temp, "2") and string.find(temp, "3") and string.find(temp, "4") and string.find(temp, "5") and string.find(temp, "6") and string.find(temp, "7") and string.find(temp, "8") and string.find(temp, "9") then
-	else
-		dd = 1
-	end
-	local ar = {}
-	local temp = ""
-	for k=13,15 do
-		local d = 0
-		for i=22,24 do
-			temp = temp..Fi(i,k)
-		end
-	end
-	if string.find(temp, "1") and string.find(temp, "2") and string.find(temp, "3") and string.find(temp, "4") and string.find(temp, "5") and string.find(temp, "6") and string.find(temp, "7") and string.find(temp, "8") and string.find(temp, "9") then
-	else
-		dd = 1
-	end
-	local ar = {}
-	local temp = ""
-	for k=17,29 do
-		local d = 0
-		for i=14,16 do
-			temp = temp..Fi(i,k)
-		end
-	end
-	if string.find(temp, "1") and string.find(temp, "2") and string.find(temp, "3") and string.find(temp, "4") and string.find(temp, "5") and string.find(temp, "6") and string.find(temp, "7") and string.find(temp, "8") and string.find(temp, "9") then
-	else
-		dd = 1
-	end
-	local ar = {}
-	local temp = ""
-	for k=17,19 do
-		local d = 0
-		for i=18,20 do
-			temp = temp..Fi(i,k)
-		end
-	end
-	if string.find(temp, "1") and string.find(temp, "2") and string.find(temp, "3") and string.find(temp, "4") and string.find(temp, "5") and string.find(temp, "6") and string.find(temp, "7") and string.find(temp, "8") and string.find(temp, "9") then
-	else
-		dd = 1
-	end
-
-	local ar = {}
-	local temp = ""
-	for k=17,19 do
-		local d = 0
-		for i=22,24 do
-			temp = temp..Fi(i,k)
-		end
-	end
-	if string.find(temp, "1") and string.find(temp, "2") and string.find(temp, "3") and string.find(temp, "4") and string.find(temp, "5") and string.find(temp, "6") and string.find(temp, "7") and string.find(temp, "8") and string.find(temp, "9") then
-	else
-		dd = 1
-	end
-	if dd == 1 then
-		sudoku_hud_message.error(player, "Sudoku is not complete.")
-	else
+	if total_items <= 1 then
 		sudoku_hud_message.success(player, "Sudoku complete!")
-		local player_inv = player:get_inventory()
 
 		local world = player_inv:get_stack("ll", 1):get_count()
-		local curlevel = player_inv:get_stack("l", ll):get_count()
+		local curlevel = player_inv:get_stack("l", world):get_count()
 
 		if storage:get_int("world_"..world) == curlevel then
 			storage:set_int("world_"..world, level+1)
@@ -1400,13 +1220,6 @@ minetest.register_node("sudoku:new_w5",{
 	end,
 })
 
-minetest.register_node("sudoku:finisch",{
-	tiles  = {"sudoku_silver_block.png^sudoku_finish.png","sudoku_silver_block.png"},
-	description = "New",
-	on_punch = function(pos, node, player, pointed_thing)
-		Finisch(player)
-	end,
-})
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local player_inv = player:get_inventory()
 	player_inv:set_size("ll", 1)
