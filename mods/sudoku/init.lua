@@ -150,6 +150,9 @@ for i=1,9 do
 				return itemstack
 			end
 		end,
+		on_drop = function(itemstack, dropper, pos)
+			return itemstack
+		end
 	})
 end
 
