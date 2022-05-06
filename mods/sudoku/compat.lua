@@ -1,4 +1,14 @@
 
+function file_check(file_name)
+	local file_found=io.open(file_name, "r")
+	if file_found==nil then
+		file_found=false
+	else
+		file_found=true
+	end
+	return file_found
+end
+
 function compat()
 	for i = 1, 5, 1 do
 		if file_check(minetest.get_worldpath().."/level"..i..".txt") then

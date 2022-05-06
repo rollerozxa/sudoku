@@ -38,8 +38,8 @@ minetest.register_on_joinplayer(function(player)
 		position = {x=0, y=0.85},
 		offset = {x=0, y=-450},
 		alignment = {x=1, y=0},
-		number = 0xFFFFFF ,
-		text = "Level: /",
+		number = 0xFFFFFF,
+		text = "",
 	})
 
 	minetest.sound_play({name="sudoku_loop"}, {loop=true})
@@ -61,16 +61,6 @@ minetest.register_globalstep(function(dtime)
 		end
 	end
 end)
-
-function file_check(file_name)
-	local file_found=io.open(file_name, "r")
-	if file_found==nil then
-		file_found=false
-	else
-		file_found=true
-	end
-	return file_found
-end
 
 minetest.register_on_joinplayer(function(player)
 	local override_table = player:get_physics_override()
