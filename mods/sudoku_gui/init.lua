@@ -16,6 +16,8 @@ minetest.register_on_joinplayer(function(player)
 	player:hud_set_hotbar_image("gui_hotbar.png")
 	player:hud_set_hotbar_selected_image("gui_hotbar_selected.png")
 
+	player:hud_set_hotbar_itemcount(9)
+
 	player:set_inventory_formspec("")
 	if player:get_player_name() ~= "singleplayer" then
 		minetest.kick_player(player:get_player_name(), "you can play sudoku only as 'singleplayer'")

@@ -1,31 +1,10 @@
 
--- Needs to be kept due to some hacks.
-minetest.register_node(":default:dirt", {
-	description = "Hack node",
-	tiles = {"logo.png"},
-})
-
-minetest.register_alias("mapgen_stone", "air")
-minetest.register_alias("mapgen_water_source", "air")
-
--- Hand
-
-local digtime = 42
-minetest.register_item(":", {
-	type = "none",
-	wield_image = "wieldhand.png",
-	wield_scale = {x = 1, y = 1, z = 2.5},
-	range = 15,
-	tool_capabilities = {
-		max_drop_level = 3,
-		groupcaps = {
-			snappy  = {times = {digtime, digtime, digtime}, uses = 0, maxlevel = 256},
-		},
-	}
-})
-
-levels = dofile(minetest.get_modpath('sudoku')..'/levels.lua')
-dofile(minetest.get_modpath('sudoku')..'/compat.lua')
+function include(file)
+	dofile(minetest.get_modpath('sudoku')..'/'..file..'.lua')
+end
+include('levels')
+include('compat')
+include('nodes')
 
 local storage = minetest.get_mod_storage()
 
@@ -42,36 +21,12 @@ minetest.register_on_joinplayer(function(player)
 		text = "",
 	})
 
-	minetest.sound_play({name="sudoku_loop"}, {loop=true})
-end)
-
-local map_version = 1
-
-minetest.register_globalstep(function(dtime)
-	local players = minetest.get_connected_players()
-	for _,player in ipairs(players) do
-		local player_inv = player:get_inventory()
-		player_inv:set_size("ll", 1)
-		player_inv:set_size("l", 4)
-		local ll = player_inv:get_stack("ll", 1):get_count()
-		local l = player_inv:get_stack("l", ll):get_count()
-		if ll == 0 then
-		else
-			player:hud_change(hud_levels[player:get_player_name()], 'text', "Level: World "..ll.."."..l)
-		end
-	end
-end)
-
-minetest.register_on_joinplayer(function(player)
-	local override_table = player:get_physics_override()
-	override_table.new_move = false
-	override_table.sneak_glitch = true
-	player:set_physics_override(override_table)
 	minetest.set_timeofday(0.5)
-	player:hud_set_hotbar_itemcount(9)
 
+	-- Run compatibility code for 1248's sudoku
 	compat()
 
+	-- Initialise storage for new worlds post-1248.
 	for i = 1, 5, 1 do
 		local key = "world_"..i
 		if storage:get_int(key) == 0 then
@@ -84,67 +39,37 @@ minetest.register_on_joinplayer(function(player)
 		player:setpos({x=19, y=8, z=-88})
 		storage:set_int("mapversion", 1)
 	end
+
+	-- Music für alle...
+	minetest.sound_play({name="sudoku_loop"}, {loop=true})
 end)
+
+minetest.register_globalstep(function(dtime)
+	for _,player in pairs(minetest.get_connected_players()) do
+		local player_inv = player:get_inventory()
+		player_inv:set_size("ll", 1)
+		player_inv:set_size("l", 4)
+		local ll = player_inv:get_stack("ll", 1):get_count()
+		local l = player_inv:get_stack("l", ll):get_count()
+		if ll == 0 then
+		else
+			player:hud_change(hud_levels[player:get_player_name()], 'text', "Level: World "..ll.."."..l)
+		end
+	end
+end)
+
 minetest.register_on_newplayer(function(player)
-	local player = minetest.get_player_by_name(player:get_player_name())
-	local pri = minetest.get_player_privs(player:get_player_name())
+	local playername = player:get_player_name()
+	local pri = minetest.get_player_privs(playername)
 	pri["fly"] = true
 	pri["fast"] = true
-	minetest.set_player_privs(player:get_player_name(), pri)
+	minetest.set_player_privs(playername, pri)
 end)
 
 minetest.register_on_player_hpchange(function(player, hp_change)
 	hp_change = 0
 	return hp_change
 end, true)
-
-minetest.register_node("sudoku:desert",{
-	description = "Desert Sand",
-	tiles = {"sudoku_desert_sand.png"},
-})
-minetest.register_node("sudoku:black",{
-	description = "Black Tile",
-	tiles = {"sudoku_black_tile.png"},
-})
-minetest.register_node("sudoku:gray",{
-	description = "Gray Tile",
-	tiles = {"sudoku_gray_tile.png"},
-})
-
-minetest.register_node("sudoku:wall",{
-	description = "Black Tile (Wall)",
-	tiles = {"sudoku_black_tile.png"},
-})
-minetest.register_node("sudoku:meselamp", {
-	description = "Mese Lamp",
-	drawtype = "glasslike",
-	tiles = {"sudoku_meselamp.png"},
-	paramtype = "light",
-	sunlight_propagates = true,
-	is_ground_content = false,
-	light_source = 15,
-})
-for i=1,9 do
-	minetest.register_node("sudoku:"..i,{
-		description = ""..i,
-		tiles = {"sudoku_digits.png^[sheet:9x2:"..(i-1)..",0"},
-	})
-
-	minetest.register_node("sudoku:n_"..i,{
-		description = ""..i,
-		tiles = {"sudoku_digits.png^[sheet:9x2:"..(i-1)..",1"},
-		groups = {snappy=1},
-		after_place_node = function(pos, placer, itemstack, pointed_thing)
-			if Place(placer,i,pos) == false or pos.z ~= -76 then
-				minetest.set_node(pos, {name="air"})
-				return itemstack
-			end
-		end,
-		on_drop = function(itemstack, dropper, pos)
-			return itemstack
-		end
-	})
-end
 
 function New(player,page1,page2)
 	local player_inv = player:get_inventory()
