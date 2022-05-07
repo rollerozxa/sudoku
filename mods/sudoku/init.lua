@@ -180,23 +180,24 @@ function New(player,page1,page2)
 end
 function Fi(i,k)
 	local temp = ""
-	if minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:1" or minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:n_1" then
+	local nodename = minetest.get_node({x=i, y=k, z=-76}).name
+	if nodename == "sudoku:1" or nodename == "sudoku:n_1" then
 		temp = "1"
-	elseif minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:2" or minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:n_2" then
+	elseif nodename == "sudoku:2" or nodename == "sudoku:n_2" then
 		temp = "2"
-	elseif minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:3" or minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:n_3" then
+	elseif nodename == "sudoku:3" or nodename == "sudoku:n_3" then
 		temp = "3"
-	elseif minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:4" or minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:n_4" then
+	elseif nodename == "sudoku:4" or nodename == "sudoku:n_4" then
 		temp = "4"
-	elseif minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:5" or minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:n_5" then
+	elseif nodename == "sudoku:5" or nodename == "sudoku:n_5" then
 		temp = "5"
-	elseif minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:6" or minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:n_6" then
+	elseif nodename == "sudoku:6" or nodename == "sudoku:n_6" then
 		temp = "6"
-	elseif minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:7" or minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:n_7" then
+	elseif nodename == "sudoku:7" or nodename == "sudoku:n_7" then
 		temp = "7"
-	elseif minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:8" or minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:n_8" then
+	elseif nodename == "sudoku:8" or nodename == "sudoku:n_8" then
 		temp = "8"
-	elseif minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:9" or minetest.get_node({x=i, y=k, z=-76}).name == "sudoku:n_9" then
+	elseif nodename == "sudoku:9" or nodename == "sudoku:n_9" then
 		temp = "9"
 	else
 		temp = "0"
@@ -403,88 +404,26 @@ function checkCompletion(player)
 	end
 end
 
+local function char(num)
+	return string.char(string.byte("a")+num-1)
+end
+
 function lvbut(from,num,level2)
-	local formspec = ""
-	.."image_button[4.5,-0.3;0.8,0.8;;esc;X]"
-	.."background[5,6.5;1,1;gui_formbg.png;true]"
-	.."listcolors[#00000069;#5A5A5A;#141318;#30434C;#FFF]"
-	.."bgcolor[#080808BB;true]"
-	if tonumber(level2) > from and num > 0 then
-		formspec = formspec.."button[0,1;1,1;a;"..(from+1).."]"
+	local formspec = {
+		"image_button[4.5,-0.3;0.8,0.8;;esc;X]"
+	}
+
+	for i = 0,24 do
+		if tonumber(level2) > (from+i) and num > i then
+			local x = i % 5
+			local y = math.floor(i / 5)+1
+
+			table.insert(formspec,
+				"button["..x..","..y..";1,1;"..char(i+1)..";"..(from+(i+1)).."]")
+		end
 	end
-	if tonumber(level2) > (from+1) and num > 1 then
-		formspec = formspec.."button[1,1;1,1;b;"..(from+2).."]"
-	end
-	if tonumber(level2) > (from+2) and num > 2 then
-		formspec = formspec.."button[2,1;1,1;c;"..(from+3).."]"
-	end
-	if tonumber(level2) > (from+3) and num > 3 then
-		formspec = formspec.."button[3,1;1,1;d;"..(from+4).."]"
-	end
-	if tonumber(level2) > (from+4) and num > 4 then
-		formspec = formspec.."button[4,1;1,1;e;"..(from+5).."]"
-	end
-	if tonumber(level2) > (from+5) and num > 5 then
-		formspec = formspec.."button[0,2;1,1;f;"..(from+6).."]"
-	end
-	if tonumber(level2) > (from+6) and num > 6 then
-		formspec = formspec.."button[1,2;1,1;g;"..(from+7).."]"
-	end
-	if tonumber(level2) > (from+7) and num > 7 then
-		formspec = formspec.."button[2,2;1,1;h;"..(from+8).."]"
-	end
-	if tonumber(level2) > (from+8) and num > 8 then
-		formspec = formspec.."button[3,2;1,1;i;"..(from+9).."]"
-	end
-	if tonumber(level2) > (from+9) and num > 9 then
-		formspec = formspec.."button[4,2;1,1;j;"..(from+10).."]"
-	end
-	if tonumber(level2) > (from+10) and num > 10 then
-		formspec = formspec.."button[0,3;1,1;k;"..(from+11).."]"
-	end
-	if tonumber(level2) > (from+11) and num > 11 then
-		formspec = formspec.."button[1,3;1,1;l;"..(from+12).."]"
-	end
-	if tonumber(level2) > (from+12) and num > 12 then
-		formspec = formspec.."button[2,3;1,1;m;"..(from+13).."]"
-	end
-	if tonumber(level2) > (from+13) and num > 13 then
-		formspec = formspec.."button[3,3;1,1;n;"..(from+14).."]"
-	end
-	if tonumber(level2) > (from+14) and num > 14 then
-		formspec = formspec.."button[4,3;1,1;o;"..(from+15).."]"
-	end
-	if tonumber(level2) > (from+15) and num > 15 then
-		formspec = formspec.."button[0,4;1,1;p;"..(from+16).."]"
-	end
-	if tonumber(level2) > (from+16) and num > 16 then
-		formspec = formspec.."button[1,4;1,1;q;"..(from+17).."]"
-	end
-	if tonumber(level2) > (from+17) and num > 17 then
-		formspec = formspec.."button[2,4;1,1;r;"..(from+18).."]"
-	end
-	if tonumber(level2) > (from+18) and num > 18 then
-		formspec = formspec.."button[3,4;1,1;s;"..(from+19).."]"
-	end
-	if tonumber(level2) > (from+19) and num > 19 then
-		formspec = formspec.."button[4,4;1,1;t;"..(from+20).."]"
-	end
-	if tonumber(level2) > (from+20) and num > 20 then
-		formspec = formspec.."button[0,5;1,1;u;"..(from+21).."]"
-	end
-	if tonumber(level2) > (from+21) and num > 21 then
-		formspec = formspec.."button[1,5;1,1;v;"..(from+22).."]"
-	end
-	if tonumber(level2) > (from+22) and num > 22 then
-		formspec = formspec.."button[2,5;1,1;w;"..(from+23).."]"
-	end
-	if tonumber(level2) > (from+23) and num > 23 then
-		formspec = formspec.."button[3,5;1,1;x;"..(from+24).."]"
-	end
-	if tonumber(level2) > (from+24) and num > 24 then
-		formspec = formspec.."button[4,5;1,1;y;"..(from+25).."]"
-	end
-	return formspec
+
+	return table.concat(formspec, "")
 end
 
 local w11 = {}
@@ -1011,23 +950,10 @@ w44.get_formspec = function(player, pos)
 		end
 	return formspec
 end
-local w3 = {}
-w3.get_formspec = function(player, pos)
-	if player == nil then
-		return
-	end
-	local player_inv = player:get_inventory()
-	formspec = "size[8,8.3]"
-		.."background[9,10.3;1,1;gui_formbg.png;true]"
-		.."listcolors[#00000069;#5A5A5A;#141318;#30434C;#FFF]"
-		.."bgcolor[#080808BB;true]"
-		.."label[0,0;Comming soon]"
-	return formspec
-end
+
 minetest.register_node("sudoku:new_w1",{
 	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w1.png"},
-	description = "New",
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+	description = "World 1",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
 		local page = player_inv:get_stack("page1", 1):get_count()+1
@@ -1050,8 +976,7 @@ minetest.register_node("sudoku:new_w1",{
 })
 minetest.register_node("sudoku:new_w2",{
 	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w2.png"},
-	description = "New",
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+	description = "World 2",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
 		local page = player_inv:get_stack("page2", 1):get_count()+1
@@ -1076,8 +1001,7 @@ minetest.register_node("sudoku:new_w2",{
 })
 minetest.register_node("sudoku:new_w3",{
 	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w3.png"},
-	description = "New",
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+	description = "World 3",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
 		local page = player_inv:get_stack("page3", 1):get_count()+1
@@ -1114,8 +1038,7 @@ minetest.register_node("sudoku:new_w3",{
 })
 minetest.register_node("sudoku:new_w4",{
 	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w4.png"},
-	description = "New",
-	--groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+	description = "World 4",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
 		local page = player_inv:get_stack("page4", 1):get_count()+1
@@ -1132,9 +1055,9 @@ minetest.register_node("sudoku:new_w4",{
 })
 minetest.register_node("sudoku:new_w5",{
 	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w5.png"},
-	description = "New",
+	description = "World 5",
 	on_punch = function(pos, node, player, pointed_thing)
-		minetest.show_formspec(player:get_player_name(), "w3" , w3.get_formspec(player))
+		sudoku_hud_message.message(player, "Coming soon!", 0xffffff)
 	end,
 })
 
