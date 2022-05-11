@@ -20,8 +20,8 @@ minetest.register_on_joinplayer(function(player)
 		number = 0xFFFFFF,
 		text = "",
 	})
-
-	minetest.set_timeofday(0.5)
+	
+	player:override_day_night_ratio(1)
 
 	-- Run compatibility code for 1248's sudoku
 	compat()
