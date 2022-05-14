@@ -9,7 +9,7 @@ function file_check(file_name)
 	return file_found
 end
 
-function compat()
+function compat(storage)
 	for i = 1, 5, 1 do
 		if file_check(minetest.get_worldpath().."/level"..i..".txt") then
 			local lv = io.open(minetest.get_worldpath().."/level"..i..".txt", "r")

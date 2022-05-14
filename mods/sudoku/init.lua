@@ -24,7 +24,7 @@ minetest.register_on_joinplayer(function(player)
 	player:override_day_night_ratio(1)
 
 	-- Run compatibility code for 1248's sudoku
-	compat()
+	compat(storage)
 
 	-- Initialise storage for new worlds post-1248.
 	for i = 1, 5, 1 do
