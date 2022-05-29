@@ -862,8 +862,13 @@ w44.get_formspec = function(player, pos)
 	return formspec
 end
 
+function worldBlock(world)
+	local silver = "sudoku_silver_block.png"
+	return {silver,silver,silver,silver,silver,silver.."^[resize:32x32^(sudoku_worlds.png^[sheet:5x1:"..(world-1)..",0)"}
+end
+
 minetest.register_node("sudoku:new_w1",{
-	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w1.png"},
+	tiles = worldBlock(1),
 	description = "World 1",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
@@ -887,7 +892,7 @@ minetest.register_node("sudoku:new_w1",{
 	end,
 })
 minetest.register_node("sudoku:new_w2",{
-	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w2.png"},
+	tiles = worldBlock(2),
 	description = "World 2",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
@@ -913,7 +918,7 @@ minetest.register_node("sudoku:new_w2",{
 	end,
 })
 minetest.register_node("sudoku:new_w3",{
-	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w3.png"},
+	tiles = worldBlock(3),
 	description = "World 3",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
@@ -951,7 +956,7 @@ minetest.register_node("sudoku:new_w3",{
 	end,
 })
 minetest.register_node("sudoku:new_w4",{
-	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w4.png"},
+	tiles = worldBlock(4),
 	description = "World 4",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
@@ -969,7 +974,7 @@ minetest.register_node("sudoku:new_w4",{
 	end,
 })
 minetest.register_node("sudoku:new_w5",{
-	tiles  = {"sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png","sudoku_silver_block.png^sudoku_new_w5.png"},
+	tiles = worldBlock(5),
 	description = "World 5",
 	on_punch = function(pos, node, player, pointed_thing)
 		sudoku_hud_message.message(player, "Coming soon!", 0xffffff)
