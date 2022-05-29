@@ -415,6 +415,11 @@ function lvbut(from,num,level2)
 
 	for i = 0,24 do
 		if tonumber(level2) > (from+i) and num > i then
+			if tonumber(level2)-1 > (from+i) then
+				table.insert(formspec,
+					"style["..char(i+1)..";bgcolor=#008800]")
+			end
+
 			local x = i % 5
 			local y = math.floor(i / 5)+1
 
