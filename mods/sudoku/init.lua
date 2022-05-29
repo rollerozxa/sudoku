@@ -956,21 +956,22 @@ minetest.register_node("sudoku:new_w1",{
 	description = "World 1",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
+		local name = player:get_player_name()
 		local page = player_inv:get_stack("page1", 1):get_count()+1
 		if page == 1 then
-			minetest.show_formspec(player:get_player_name(), "w11" , w11.get_formspec(player))
+			minetest.show_formspec(name, "w11" , w11.get_formspec(player))
 		elseif page == 2 then
-			minetest.show_formspec(player:get_player_name(), "w12" , w12.get_formspec(player))
+			minetest.show_formspec(name, "w12" , w12.get_formspec(player))
 		elseif page == 3 then
-			minetest.show_formspec(player:get_player_name(), "w13" , w13.get_formspec(player))
+			minetest.show_formspec(name, "w13" , w13.get_formspec(player))
 		elseif page == 4 then
-			minetest.show_formspec(player:get_player_name(), "w14" , w14.get_formspec(player))
+			minetest.show_formspec(name, "w14" , w14.get_formspec(player))
 		elseif page == 5 then
-			minetest.show_formspec(player:get_player_name(), "w15" , w15.get_formspec(player))
+			minetest.show_formspec(name, "w15" , w15.get_formspec(player))
 		elseif page == 6 then
-			minetest.show_formspec(player:get_player_name(), "w16" , w16.get_formspec(player))
+			minetest.show_formspec(name, "w16" , w16.get_formspec(player))
 		elseif page == 7 then
-			minetest.show_formspec(player:get_player_name(), "w17" , w17.get_formspec(player))
+			minetest.show_formspec(name, "w17" , w17.get_formspec(player))
 		end
 	end,
 })
@@ -979,23 +980,24 @@ minetest.register_node("sudoku:new_w2",{
 	description = "World 2",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
+		local name = player:get_player_name()
 		local page = player_inv:get_stack("page2", 1):get_count()+1
 		if page == 1 then
-			minetest.show_formspec(player:get_player_name(), "w21" , w21.get_formspec(player))
+			minetest.show_formspec(name, "w21" , w21.get_formspec(player))
 		elseif page == 2 then
-			minetest.show_formspec(player:get_player_name(), "w22" , w22.get_formspec(player))
+			minetest.show_formspec(name, "w22" , w22.get_formspec(player))
 		elseif page == 3 then
-			minetest.show_formspec(player:get_player_name(), "w23" , w23.get_formspec(player))
+			minetest.show_formspec(name, "w23" , w23.get_formspec(player))
 		elseif page == 4 then
-			minetest.show_formspec(player:get_player_name(), "w24" , w24.get_formspec(player))
+			minetest.show_formspec(name, "w24" , w24.get_formspec(player))
 		elseif page == 5 then
-			minetest.show_formspec(player:get_player_name(), "w25" , w25.get_formspec(player))
+			minetest.show_formspec(name, "w25" , w25.get_formspec(player))
 		elseif page == 6 then
-			minetest.show_formspec(player:get_player_name(), "w26" , w26.get_formspec(player))
+			minetest.show_formspec(name, "w26" , w26.get_formspec(player))
 		elseif page == 7 then
-			minetest.show_formspec(player:get_player_name(), "w27" , w27.get_formspec(player))
+			minetest.show_formspec(name, "w27" , w27.get_formspec(player))
 		elseif page == 8 then
-			minetest.show_formspec(player:get_player_name(), "w28" , w28.get_formspec(player))
+			minetest.show_formspec(name, "w28" , w28.get_formspec(player))
 		end
 	end,
 })
@@ -1004,35 +1006,36 @@ minetest.register_node("sudoku:new_w3",{
 	description = "World 3",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
+		local name = player:get_player_name()
 		local page = player_inv:get_stack("page3", 1):get_count()+1
 		if page == 1 then
-			minetest.show_formspec(player:get_player_name(), "w31" , w31.get_formspec(player))
+			minetest.show_formspec(name, "w31" , w31.get_formspec(player))
 		elseif page == 2 then
-			minetest.show_formspec(player:get_player_name(), "w32" , w32.get_formspec(player))
+			minetest.show_formspec(name, "w32" , w32.get_formspec(player))
 		elseif page == 3 then
-			minetest.show_formspec(player:get_player_name(), "w33" , w33.get_formspec(player))
+			minetest.show_formspec(name, "w33" , w33.get_formspec(player))
 		elseif page == 4 then
-			minetest.show_formspec(player:get_player_name(), "w34" , w34.get_formspec(player))
+			minetest.show_formspec(name, "w34" , w34.get_formspec(player))
 		elseif page == 5 then
-			minetest.show_formspec(player:get_player_name(), "w35" , w35.get_formspec(player))
+			minetest.show_formspec(name, "w35" , w35.get_formspec(player))
 		elseif page == 6 then
-			minetest.show_formspec(player:get_player_name(), "w36" , w36.get_formspec(player))
+			minetest.show_formspec(name, "w36" , w36.get_formspec(player))
 		elseif page == 7 then
-			minetest.show_formspec(player:get_player_name(), "w37" , w37.get_formspec(player))
+			minetest.show_formspec(name, "w37" , w37.get_formspec(player))
 		elseif page == 8 then
-			minetest.show_formspec(player:get_player_name(), "w38" , w38.get_formspec(player))
+			minetest.show_formspec(name, "w38" , w38.get_formspec(player))
 		elseif page == 9 then
-			minetest.show_formspec(player:get_player_name(), "w39" , w39.get_formspec(player))
+			minetest.show_formspec(name, "w39" , w39.get_formspec(player))
 		elseif page == 10 then
-			minetest.show_formspec(player:get_player_name(), "w310" , w310.get_formspec(player))
+			minetest.show_formspec(name, "w310" , w310.get_formspec(player))
 		elseif page == 11 then
-			minetest.show_formspec(player:get_player_name(), "w311" , w311.get_formspec(player))
+			minetest.show_formspec(name, "w311" , w311.get_formspec(player))
 		elseif page == 12 then
-			minetest.show_formspec(player:get_player_name(), "w312" , w312.get_formspec(player))
+			minetest.show_formspec(name, "w312" , w312.get_formspec(player))
 		elseif page == 13 then
-			minetest.show_formspec(player:get_player_name(), "w313" , w313.get_formspec(player))
+			minetest.show_formspec(name, "w313" , w313.get_formspec(player))
 		elseif page == 14 then
-			minetest.show_formspec(player:get_player_name(), "w314" , w314.get_formspec(player))
+			minetest.show_formspec(name, "w314" , w314.get_formspec(player))
 		end
 	end,
 })
@@ -1041,15 +1044,16 @@ minetest.register_node("sudoku:new_w4",{
 	description = "World 4",
 	on_punch = function(pos, node, player, pointed_thing)
 		local player_inv = player:get_inventory()
+		local name = player:get_player_name()
 		local page = player_inv:get_stack("page4", 1):get_count()+1
 		if page == 1 then
-			minetest.show_formspec(player:get_player_name(), "w41" , w41.get_formspec(player))
+			minetest.show_formspec(name, "w41" , w41.get_formspec(player))
 		elseif page == 2 then
-			minetest.show_formspec(player:get_player_name(), "w42" , w42.get_formspec(player))
+			minetest.show_formspec(name, "w42" , w42.get_formspec(player))
 		elseif page == 3 then
-			minetest.show_formspec(player:get_player_name(), "w43" , w43.get_formspec(player))
+			minetest.show_formspec(name, "w43" , w43.get_formspec(player))
 		elseif page == 4 then
-			minetest.show_formspec(player:get_player_name(), "w44" , w44.get_formspec(player))
+			minetest.show_formspec(name, "w44" , w44.get_formspec(player))
 		end
 	end,
 })
@@ -1105,106 +1109,107 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			end
 		end
 	end
+	local name = player:get_player_name()
 	if fields.waa then
 		player_inv:set_stack("page1",  1, nil)
-		minetest.show_formspec(player:get_player_name(), "w11" , w11.get_formspec(player))
+		minetest.show_formspec(name, "w11" , w11.get_formspec(player))
 	elseif fields.wab then
 		player_inv:set_stack("page1",  1, "default:dirt")
-		minetest.show_formspec(player:get_player_name(), "w12" , w12.get_formspec(player))
+		minetest.show_formspec(name, "w12" , w12.get_formspec(player))
 	elseif fields.wac then
 		player_inv:set_stack("page1",  1, "default:dirt 2")
-		minetest.show_formspec(player:get_player_name(), "w13" , w13.get_formspec(player))
+		minetest.show_formspec(name, "w13" , w13.get_formspec(player))
 	elseif fields.wad then
 		player_inv:set_stack("page1",  1, "default:dirt 3")
-		minetest.show_formspec(player:get_player_name(), "w14" , w14.get_formspec(player))
+		minetest.show_formspec(name, "w14" , w14.get_formspec(player))
 	elseif fields.wae then
 		player_inv:set_stack("page1",  1, "default:dirt 4")
-		minetest.show_formspec(player:get_player_name(), "w15" , w15.get_formspec(player))
+		minetest.show_formspec(name, "w15" , w15.get_formspec(player))
 	elseif fields.waf then
 		player_inv:set_stack("page1",  1, "default:dirt 5")
-		minetest.show_formspec(player:get_player_name(), "w16" , w16.get_formspec(player))
+		minetest.show_formspec(name, "w16" , w16.get_formspec(player))
 	elseif fields.wag then
 		player_inv:set_stack("page1",  1, "default:dirt 6")
-		minetest.show_formspec(player:get_player_name(), "w17" , w17.get_formspec(player))
+		minetest.show_formspec(name, "w17" , w17.get_formspec(player))
 	elseif fields.wba then
 		player_inv:set_stack("page2",  1, nil)
-		minetest.show_formspec(player:get_player_name(), "w21" , w21.get_formspec(player))
+		minetest.show_formspec(name, "w21" , w21.get_formspec(player))
 	elseif fields.wbb then
 		player_inv:set_stack("page2",  1, "default:dirt")
-		minetest.show_formspec(player:get_player_name(), "w22" , w22.get_formspec(player))
+		minetest.show_formspec(name, "w22" , w22.get_formspec(player))
 	elseif fields.wbc then
 		player_inv:set_stack("page2",  1, "default:dirt 2")
-		minetest.show_formspec(player:get_player_name(), "w23" , w23.get_formspec(player))
+		minetest.show_formspec(name, "w23" , w23.get_formspec(player))
 	elseif fields.wbd then
 		player_inv:set_stack("page2",  1, "default:dirt 3")
-		minetest.show_formspec(player:get_player_name(), "w24" , w24.get_formspec(player))
+		minetest.show_formspec(name, "w24" , w24.get_formspec(player))
 	elseif fields.wbe then
 		player_inv:set_stack("page2",  1, "default:dirt 4")
-		minetest.show_formspec(player:get_player_name(), "w25" , w25.get_formspec(player))
+		minetest.show_formspec(name, "w25" , w25.get_formspec(player))
 	elseif fields.wbf then
 		player_inv:set_stack("page2",  1, "default:dirt 5")
-		minetest.show_formspec(player:get_player_name(), "w26" , w26.get_formspec(player))
+		minetest.show_formspec(name, "w26" , w26.get_formspec(player))
 	elseif fields.wbg then
 		player_inv:set_stack("page2",  1, "default:dirt 6")
-		minetest.show_formspec(player:get_player_name(), "w27" , w27.get_formspec(player))
+		minetest.show_formspec(name, "w27" , w27.get_formspec(player))
 	elseif fields.wbh then
 		player_inv:set_stack("page2",  1, "default:dirt 7")
-		minetest.show_formspec(player:get_player_name(), "w28" , w28.get_formspec(player))
+		minetest.show_formspec(name, "w28" , w28.get_formspec(player))
 	elseif fields.wca then
 		player_inv:set_stack("page3",  1, nil)
-		minetest.show_formspec(player:get_player_name(), "w31" , w31.get_formspec(player))
+		minetest.show_formspec(name, "w31" , w31.get_formspec(player))
 	elseif fields.wcb then
 		player_inv:set_stack("page3",  1, "default:dirt")
-		minetest.show_formspec(player:get_player_name(), "w32" , w32.get_formspec(player))
+		minetest.show_formspec(name, "w32" , w32.get_formspec(player))
 	elseif fields.wcc then
 		player_inv:set_stack("page3",  1, "default:dirt 2")
-		minetest.show_formspec(player:get_player_name(), "w33" , w33.get_formspec(player))
+		minetest.show_formspec(name, "w33" , w33.get_formspec(player))
 	elseif fields.wcd then
 		player_inv:set_stack("page3",  1, "default:dirt 3")
-		minetest.show_formspec(player:get_player_name(), "w34" , w34.get_formspec(player))
+		minetest.show_formspec(name, "w34" , w34.get_formspec(player))
 	elseif fields.wce then
 		player_inv:set_stack("page3",  1, "default:dirt 4")
-		minetest.show_formspec(player:get_player_name(), "w35" , w35.get_formspec(player))
+		minetest.show_formspec(name, "w35" , w35.get_formspec(player))
 	elseif fields.wcf then
 		player_inv:set_stack("page3",  1, "default:dirt 5")
-		minetest.show_formspec(player:get_player_name(), "w36" , w36.get_formspec(player))
+		minetest.show_formspec(name, "w36" , w36.get_formspec(player))
 	elseif fields.wcg then
 		player_inv:set_stack("page3",  1, "default:dirt 6")
-		minetest.show_formspec(player:get_player_name(), "w37" , w37.get_formspec(player))
+		minetest.show_formspec(name, "w37" , w37.get_formspec(player))
 	elseif fields.wch then
 		player_inv:set_stack("page3",  1, "default:dirt 7")
-		minetest.show_formspec(player:get_player_name(), "w38" , w38.get_formspec(player))
+		minetest.show_formspec(name, "w38" , w38.get_formspec(player))
 	elseif fields.wci then
 		player_inv:set_stack("page3",  1, "default:dirt 8")
-		minetest.show_formspec(player:get_player_name(), "w39" , w39.get_formspec(player))
+		minetest.show_formspec(name, "w39" , w39.get_formspec(player))
 	elseif fields.wcj then
 		player_inv:set_stack("page3",  1, "default:dirt 9")
-		minetest.show_formspec(player:get_player_name(), "w310" , w310.get_formspec(player))
+		minetest.show_formspec(name, "w310" , w310.get_formspec(player))
 	elseif fields.wck then
 		player_inv:set_stack("page3",  1, "default:dirt 10")
-		minetest.show_formspec(player:get_player_name(), "w311" , w311.get_formspec(player))
+		minetest.show_formspec(name, "w311" , w311.get_formspec(player))
 	elseif fields.wcl then
 		player_inv:set_stack("page3",  1, "default:dirt 11")
-		minetest.show_formspec(player:get_player_name(), "w312" , w312.get_formspec(player))
+		minetest.show_formspec(name, "w312" , w312.get_formspec(player))
 	elseif fields.wcm then
 		player_inv:set_stack("page3",  1, "default:dirt 12")
-		minetest.show_formspec(player:get_player_name(), "w313" , w313.get_formspec(player))
+		minetest.show_formspec(name, "w313" , w313.get_formspec(player))
 	elseif fields.wcn then
 		player_inv:set_stack("page3",  1, "default:dirt 13")
-		minetest.show_formspec(player:get_player_name(), "w314" , w314.get_formspec(player))
+		minetest.show_formspec(name, "w314" , w314.get_formspec(player))
 	elseif fields.wda then
 		player_inv:set_stack("page4",  1, "")
-		minetest.show_formspec(player:get_player_name(), "w41" , w41.get_formspec(player))
+		minetest.show_formspec(name, "w41" , w41.get_formspec(player))
 	elseif fields.wdb then
 		player_inv:set_stack("page4",  1, "default:dirt")
-		minetest.show_formspec(player:get_player_name(), "w42" , w42.get_formspec(player))
+		minetest.show_formspec(name, "w42" , w42.get_formspec(player))
 	elseif fields.wdc then
 		player_inv:set_stack("page4",  1, "default:dirt 2")
-		minetest.show_formspec(player:get_player_name(), "w43" , w43.get_formspec(player))
+		minetest.show_formspec(name, "w43" , w43.get_formspec(player))
 	elseif fields.wdd then
 		player_inv:set_stack("page4",  1, "default:dirt 3")
-		minetest.show_formspec(player:get_player_name(), "w44" , w44.get_formspec(player))
+		minetest.show_formspec(name, "w44" , w44.get_formspec(player))
 	else
-		minetest.show_formspec(player:get_player_name(), "", "")
+		minetest.show_formspec(name, "", "")
 	end
 end)
