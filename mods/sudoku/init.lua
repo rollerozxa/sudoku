@@ -130,34 +130,35 @@ function New(player,page1,page2)
 			else
 				l = j+2
 			end
+			local pos = {x=k+13, y=(12-l)+8, z=-76}
 			if string.sub(ar1[j], i, i) == "0" then
-				minetest.set_node({x=k+13, y=(12-l)+8, z=-76}, {name="air"})
+				minetest.set_node(pos, {name="air"})
 			elseif string.sub(ar1[j], i, i) == "1" then
-				minetest.set_node({x=k+13, y=(12-l)+8, z=-76}, {name="sudoku:1"})
+				minetest.set_node(pos, {name="sudoku:1"})
 				a1 = a1+1
 			elseif string.sub(ar1[j], i, i) == "2" then
-				minetest.set_node({x=k+13, y=(12-l)+8, z=-76}, {name="sudoku:2"})
+				minetest.set_node(pos, {name="sudoku:2"})
 				a2 = a2+1
 			elseif string.sub(ar1[j], i, i) == "3" then
-				minetest.set_node({x=k+13, y=(12-l)+8, z=-76}, {name="sudoku:3"})
+				minetest.set_node(pos, {name="sudoku:3"})
 				a3 = a3+1
 			elseif string.sub(ar1[j], i, i) == "4" then
-				minetest.set_node({x=k+13, y=(12-l)+8, z=-76}, {name="sudoku:4"})
+				minetest.set_node(pos, {name="sudoku:4"})
 				a4 = a4+1
 			elseif string.sub(ar1[j], i, i) == "5" then
-				minetest.set_node({x=k+13, y=(12-l)+8, z=-76}, {name="sudoku:5"})
+				minetest.set_node(pos, {name="sudoku:5"})
 				a5 = a5+1
 			elseif string.sub(ar1[j], i, i) == "6" then
-				minetest.set_node({x=k+13, y=(12-l)+8, z=-76}, {name="sudoku:6"})
+				minetest.set_node(pos, {name="sudoku:6"})
 				a6 = a6+1
 			elseif string.sub(ar1[j], i, i) == "7" then
-				minetest.set_node({x=k+13, y=(12-l)+8, z=-76}, {name="sudoku:7"})
+				minetest.set_node(pos, {name="sudoku:7"})
 				a7 = a7+1
 			elseif string.sub(ar1[j], i, i) == "8" then
-				minetest.set_node({x=k+13, y=(12-l)+8, z=-76}, {name="sudoku:8"})
+				minetest.set_node(pos, {name="sudoku:8"})
 				a8 = a8+1
 			elseif string.sub(ar1[j], i, i) == "9" then
-				minetest.set_node({x=k+13, y=(12-l)+8, z=-76}, {name="sudoku:9"})
+				minetest.set_node(pos, {name="sudoku:9"})
 				a9 = a9+1
 			end
 		end
