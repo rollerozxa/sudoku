@@ -14,13 +14,13 @@ minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
 	hud_levels[name] = player:hud_add({
 		hud_elem_type = "text",
-		position = {x=0, y=0.85},
+		position = {x=0.3, y=1.5},
 		offset = {x=0, y=-450},
 		alignment = {x=1, y=0},
 		number = 0xFFFFFF,
 		text = "",
 	})
-	
+
 	player:override_day_night_ratio(1)
 
 	-- Run compatibility code for 1248's sudoku
@@ -53,7 +53,7 @@ minetest.register_globalstep(function(dtime)
 		local l = player_inv:get_stack("l", ll):get_count()
 		if ll == 0 then
 		else
-			player:hud_change(hud_levels[player:get_player_name()], 'text', "Level: World "..ll.."."..l)
+			player:hud_change(hud_levels[player:get_player_name()], 'text', "Level "..ll.."-"..l)
 		end
 	end
 end)
