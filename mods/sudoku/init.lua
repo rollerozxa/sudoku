@@ -51,8 +51,7 @@ minetest.register_globalstep(function(dtime)
 		player_inv:set_size("l", 4)
 		local ll = player_inv:get_stack("ll", 1):get_count()
 		local l = player_inv:get_stack("l", ll):get_count()
-		if ll == 0 then
-		else
+		if ll ~= 0 then
 			player:hud_change(hud_levels[player:get_player_name()], 'text', "Level "..ll.."-"..l)
 		end
 	end
@@ -67,8 +66,7 @@ minetest.register_on_newplayer(function(player)
 end)
 
 minetest.register_on_player_hpchange(function(player, hp_change)
-	hp_change = 0
-	return hp_change
+	return 0
 end, true)
 
 function New(player,page1,page2)
@@ -77,7 +75,6 @@ function New(player,page1,page2)
 	player_inv:set_size("main", 9)
 
 	local ar1 = {}
-	local ar2 = {}
 	for i=1,9 do
 		for s in levels[page1][page2]:gmatch("[^\r\n]+") do
 			table.insert(ar1, s)
@@ -114,7 +111,7 @@ function New(player,page1,page2)
 	local a9 = 0
 	for j = 1, 9 do
 		for i = 1, string.len(ar1[j]) do
-			local k = 0
+			local k
 			if i < 4 then
 				k = i
 			elseif i < 7 then
@@ -122,7 +119,7 @@ function New(player,page1,page2)
 			else
 				k = i+2
 			end
-			local l = 0
+			local l
 			if j < 4 then
 				l = j
 			elseif j < 7 then
@@ -180,7 +177,7 @@ function New(player,page1,page2)
 	player_inv:add_item("main", "sudoku:n_9 "..(9-a9))
 end
 function Fi(i,k)
-	local temp = ""
+	local temp
 	local nodename = minetest.get_node({x=i, y=k, z=-76}).name
 	if nodename == "sudoku:1" or nodename == "sudoku:n_1" then
 		temp = "1"
@@ -213,7 +210,6 @@ function Place(player,number,pos)
 	local dd = 0
 	local ar = {}
 	for i=14,24 do
-		local d = 0
 		local temp = ""
 		for k=9,19 do
 			temp = temp..Fi(i,k)
@@ -238,9 +234,8 @@ function Place(player,number,pos)
 			dd = 1
 		end
 	end
-	local ar = {}
+	ar = {}
 	for k=9,19 do
-		local d = 0
 		local temp = ""
 		for i=14,24 do
 			temp = temp..Fi(i,k)
@@ -266,10 +261,8 @@ function Place(player,number,pos)
 		end
 	end
 
-	local ar = {}
 	local temp = ""
 	for k=9,11 do
-		local d = 0
 		for i=14,16 do
 			temp = temp..Fi(i,k)
 		end
@@ -278,10 +271,9 @@ function Place(player,number,pos)
 	else
 		dd = 1
 	end
-	local ar = {}
-	local temp = ""
+
+	temp = ""
 	for k=9,11 do
-		local d = 0
 		for i=18,20 do
 			temp = temp..Fi(i,k)
 		end
@@ -290,10 +282,9 @@ function Place(player,number,pos)
 	else
 		dd = 1
 	end
-	local ar = {}
-	local temp = ""
+
+	temp = ""
 	for k=9,11 do
-		local d = 0
 		for i=22,24 do
 			temp = temp..Fi(i,k)
 		end
@@ -303,10 +294,8 @@ function Place(player,number,pos)
 		dd = 1
 	end
 
-	local ar = {}
-	local temp = ""
+	temp = ""
 	for k=13,15 do
-		local d = 0
 		for i=14,16 do
 			temp = temp..Fi(i,k)
 		end
@@ -315,10 +304,9 @@ function Place(player,number,pos)
 	else
 		dd = 1
 	end
-	local ar = {}
-	local temp = ""
+
+	temp = ""
 	for k=13,15 do
-		local d = 0
 		for i=18,20 do
 			temp = temp..Fi(i,k)
 		end
@@ -327,10 +315,9 @@ function Place(player,number,pos)
 	else
 		dd = 1
 	end
-	local ar = {}
-	local temp = ""
+
+	temp = ""
 	for k=13,15 do
-		local d = 0
 		for i=22,24 do
 			temp = temp..Fi(i,k)
 		end
@@ -339,10 +326,9 @@ function Place(player,number,pos)
 	else
 		dd = 1
 	end
-	local ar = {}
-	local temp = ""
+
+	temp = ""
 	for k=17,29 do
-		local d = 0
 		for i=14,16 do
 			temp = temp..Fi(i,k)
 		end
@@ -351,10 +337,9 @@ function Place(player,number,pos)
 	else
 		dd = 1
 	end
-	local ar = {}
-	local temp = ""
+
+	temp = ""
 	for k=17,19 do
-		local d = 0
 		for i=18,20 do
 			temp = temp..Fi(i,k)
 		end
@@ -364,10 +349,9 @@ function Place(player,number,pos)
 		dd = 1
 	end
 
-	local ar = {}
-	local temp = ""
+
+	temp = ""
 	for k=17,19 do
-		local d = 0
 		for i=22,24 do
 			temp = temp..Fi(i,k)
 		end
