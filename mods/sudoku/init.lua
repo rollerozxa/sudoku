@@ -58,11 +58,10 @@ minetest.register_globalstep(function(dtime)
 end)
 
 minetest.register_on_newplayer(function(player)
-	local playername = player:get_player_name()
-	local pri = minetest.get_player_privs(playername)
-	pri["fly"] = true
-	pri["fast"] = true
-	minetest.set_player_privs(playername, pri)
+	local privs = minetest.get_player_privs(player:get_player_name())
+	privs.fly = true
+	privs.fast = true
+	minetest.set_player_privs(playername, privs)
 end)
 
 minetest.register_on_player_hpchange(function(player, hp_change)
@@ -394,9 +393,7 @@ local function char(num)
 end
 
 function lvbut(from,num,level2)
-	local formspec = {
-		"image_button[4.5,-0.3;0.8,0.8;;esc;X]"
-	}
+	local formspec = {"image_button[4.5,-0.3;0.8,0.8;;esc;X]"}
 
 	for i = 0,24 do
 		if tonumber(level2) > (from+i) and num > i then
@@ -413,11 +410,13 @@ function lvbut(from,num,level2)
 		end
 	end
 
-	return table.concat(formspec, "")
+	return table.concat(formspec)
 end
 
 function wldSelTitle(world, unlocked, total)
-	return "label[0,0;World "..world.."     ("..(tonumber(unlocked)-1).."/"..total.." completed)]"
+	return table.concat{
+		"size[5,6.5]", "label[0,0;World ",world,
+		"     (",(tonumber(unlocked)-1),"/",total," completed)]"}
 end
 
 local w11 = {}
@@ -425,7 +424,7 @@ w11.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_1')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(1, level2, 160)
+	local formspec = wldSelTitle(1, level2, 160)
 	formspec = formspec..lvbut(0,25,level2)
 	if level2 > 25 then
 		formspec = formspec.."button[2.5,6;1,1;wab;>]"
@@ -437,7 +436,7 @@ w12.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_1')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(1, level2, 160)
+	local formspec = wldSelTitle(1, level2, 160)
 	formspec = formspec.."button[1.5,6;1,1;waa;<]"
 	formspec = formspec..lvbut(25,25,level2)
 	if level2 > 50 then
@@ -450,7 +449,7 @@ w13.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_1')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(1, level2, 160)
+	local formspec = wldSelTitle(1, level2, 160)
 	formspec = formspec.."button[1.5,6;1,1;wab;<]"
 	formspec = formspec..lvbut(50,25,level2)
 	if level2 > 75 then
@@ -463,7 +462,7 @@ w14.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_1')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(1, level2, 160)
+	local formspec = wldSelTitle(1, level2, 160)
 	formspec = formspec.."button[1.5,6;1,1;wac;<]"
 	formspec = formspec..lvbut(75,25,level2)
 	if level2 > 100 then
@@ -476,7 +475,7 @@ w15.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_1')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(1, level2, 160)
+	local formspec = wldSelTitle(1, level2, 160)
 	formspec = formspec.."button[1.5,6;1,1;wad;<]"
 	formspec = formspec..lvbut(100,25,level2)
 	if level2 > 125 then
@@ -489,7 +488,7 @@ w16.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_1')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(1, level2, 160)
+	local formspec = wldSelTitle(1, level2, 160)
 	formspec = formspec.."button[1.5,6;1,1;wae;<]"
 	formspec = formspec..lvbut(125,25,level2)
 	if level2 > 150 then
@@ -502,7 +501,7 @@ w17.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_1')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(1, level2, 160)
+	local formspec = wldSelTitle(1, level2, 160)
 	formspec = formspec.."button[1.5,6;1,1;waf;<]"
 	formspec = formspec..lvbut(150,10,level2)
 	if level2 > 160 then
@@ -515,7 +514,7 @@ w21.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_2')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(2, level2, 190)
+	local formspec = wldSelTitle(2, level2, 190)
 	formspec = formspec..lvbut(0,25,level2)
 	if level2 > 25 then
 		formspec = formspec.."button[2.5,6;1,1;wbb;>]"
@@ -527,7 +526,7 @@ w22.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_2')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(2, level2, 190)
+	local formspec = wldSelTitle(2, level2, 190)
 	formspec = formspec.."button[1.5,6;1,1;wba;<]"
 	formspec = formspec..lvbut(25,25,level2)
 	if level2 > 50 then
@@ -540,7 +539,7 @@ w23.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_2')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(2, level2, 190)
+	local formspec = wldSelTitle(2, level2, 190)
 	formspec = formspec.."button[1.5,6;1,1;wbb;<]"
 	formspec = formspec..lvbut(50,25,level2)
 	if level2 > 75 then
@@ -553,7 +552,7 @@ w24.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_2')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(2, level2, 190)
+	local formspec = wldSelTitle(2, level2, 190)
 	formspec = formspec.."button[1.5,6;1,1;wbc;<]"
 	formspec = formspec..lvbut(75,25,level2)
 	if level2 > 100 then
@@ -566,7 +565,7 @@ w25.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_2')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(2, level2, 190)
+	local formspec = wldSelTitle(2, level2, 190)
 	formspec = formspec.."button[1.5,6;1,1;wbd;<]"
 	formspec = formspec..lvbut(100,25,level2)
 	if level2 > 125 then
@@ -579,7 +578,7 @@ w26.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_2')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(2, level2, 190)
+	local formspec = wldSelTitle(2, level2, 190)
 	formspec = formspec.."button[1.5,6;1,1;wbe;<]"
 	formspec = formspec..lvbut(125,25,level2)
 	if level2 > 150 then
@@ -592,7 +591,7 @@ w27.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_2')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(2, level2, 190)
+	local formspec = wldSelTitle(2, level2, 190)
 	formspec = formspec.."button[1.5,6;1,1;wbf;<]"
 	formspec = formspec..lvbut(150,25,level2)
 	if level2 > 175 then
@@ -605,7 +604,7 @@ w28.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_2')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(2, level2, 190)
+	local formspec = wldSelTitle(2, level2, 190)
 	formspec = formspec.."button[1.5,6;1,1;wbg;<]"
 	formspec = formspec..lvbut(175,15,level2)
 	if level2 > 190 then
@@ -618,7 +617,7 @@ w31.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec..lvbut(0,25,level2)
 	if level2 > 25 then
 		formspec = formspec.."button[2.5,6;1,1;wcb;>]"
@@ -630,7 +629,7 @@ w32.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wca;<]"
 	formspec = formspec..lvbut(25,25,level2)
 	if level2 > 50 then
@@ -643,7 +642,7 @@ w33.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wcb;<]"
 	formspec = formspec..lvbut(50,25,level2)
 	if level2 > 75 then
@@ -656,7 +655,7 @@ w34.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wcc;<]"
 	formspec = formspec..lvbut(75,25,level2)
 	if level2 > 100 then
@@ -669,7 +668,7 @@ w35.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wcd;<]"
 	formspec = formspec..lvbut(100,25,level2)
 	if level2 > 125 then
@@ -682,7 +681,7 @@ w36.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wce;<]"
 	formspec = formspec..lvbut(125,25,level2)
 	if level2 > 150 then
@@ -695,7 +694,7 @@ w37.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wcf;<]"
 	formspec = formspec..lvbut(150,25,level2)
 	if level2 > 175 then
@@ -708,7 +707,7 @@ w38.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wcg;<]"
 	formspec = formspec..lvbut(175,25,level2)
 	if level2 > 200 then
@@ -721,7 +720,7 @@ w39.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wch;<]"
 	formspec = formspec..lvbut(200,25,level2)
 	if level2 > 225 then
@@ -734,7 +733,7 @@ w310.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wci;<]"
 	formspec = formspec..lvbut(225,25,level2)
 	if level2 > 250 then
@@ -747,7 +746,7 @@ w311.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wcj;<]"
 	formspec = formspec..lvbut(250,25,level2)
 	if level2 > 275 then
@@ -760,7 +759,7 @@ w312.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wck;<]"
 	formspec = formspec..lvbut(275,25,level2)
 	if level2 > 300 then
@@ -773,7 +772,7 @@ w313.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wcl;<]"
 	formspec = formspec..lvbut(300,25,level2)
 	if level2 > 325 then
@@ -786,7 +785,7 @@ w314.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_3')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(3, level2, 333)
+	local formspec = wldSelTitle(3, level2, 333)
 	formspec = formspec.."button[1.5,6;1,1;wcm;<]"
 	formspec = formspec..lvbut(325,8,level2)
 	if level2 > 333 then
@@ -799,7 +798,7 @@ w41.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_4')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(4, level2, 100)
+	local formspec = wldSelTitle(4, level2, 100)
 	formspec = formspec..lvbut(0,25,level2)
 	if level2 > 25 then
 		formspec = formspec.."button[2.5,6;1,1;wdb;>]"
@@ -811,7 +810,7 @@ w42.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_4')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(4, level2, 100)
+	local formspec = wldSelTitle(4, level2, 100)
 	formspec = formspec.."button[1.5,6;1,1;wda;<]"
 	formspec = formspec..lvbut(25,25,level2)
 	if level2 > 50 then
@@ -824,7 +823,7 @@ w43.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_4')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(4, level2, 100)
+	local formspec = wldSelTitle(4, level2, 100)
 	formspec = formspec.."button[1.5,6;1,1;wdb;<]"
 	formspec = formspec..lvbut(50,25,level2)
 	if level2 > 75 then
@@ -837,7 +836,7 @@ w44.get_formspec = function(player, pos)
 	if player == nil then return end
 	local level2 = storage:get_int('world_4')
 
-	local formspec = "size[5,6.5]"..wldSelTitle(4, level2, 100)
+	local formspec = wldSelTitle(4, level2, 100)
 	formspec = formspec.."button[1.5,6;1,1;wdc;<]"
 	formspec = formspec..lvbut(75,25,level2)
 	if level2 > 100 then
