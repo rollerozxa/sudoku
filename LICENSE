@@ -1,3 +1,18 @@
+License of media (textures and sounds)
+--------------------------------------
+
+Media inside `sudoku_player` and `sudoku_gui` originates from
+Minetest Game and is licensed under CC-BY-SA 3.0, see
+respective mod's README for attribution.
+
+All other media is licensed under CC-BY-SA 4.0.
+
+For information/attribution about sounds see README.
+
+
+License of source code
+----------------------
+
                   GNU LESSER GENERAL PUBLIC LICENSE
                        Version 2.1, February 1999
 
