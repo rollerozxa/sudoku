@@ -16,3 +16,6 @@ minetest.register_on_joinplayer(function(player)
 		minetest.kick_player(player:get_player_name(), "Sudoku is a singleplayer-only game.")
 	end
 end)
+
+core.hud_replace_builtin('health', {})
+core.hud_replace_builtin('breath', {})

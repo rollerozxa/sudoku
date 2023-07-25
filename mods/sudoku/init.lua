@@ -12,14 +12,14 @@ local hud_levels = {}
 
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
-	hud_levels[name] = player:hud_add({
+	hud_levels[name] = player:hud_add{
 		hud_elem_type = "text",
 		position = {x=0.3, y=1.5},
 		offset = {x=0, y=-450},
 		alignment = {x=1, y=0},
 		number = 0xFFFFFF,
 		text = "",
-	})
+	}
 
 	player:override_day_night_ratio(1)
 
@@ -36,7 +36,7 @@ minetest.register_on_joinplayer(function(player)
 
 	if storage:get_int("mapversion") == 0 then
 		minetest.place_schematic({ x = 9, y = 7, z = -93 }, minetest.get_modpath("sudoku").."/schematics/sector1.mts","0")
-		player:setpos({x=19, y=8, z=-88})
+		player:set_pos({x=19, y=8, z=-88})
 		storage:set_int("mapversion", 1)
 	end
 
@@ -61,21 +61,21 @@ minetest.register_on_newplayer(function(player)
 	local privs = minetest.get_player_privs(player:get_player_name())
 	privs.fly = true
 	privs.fast = true
-	minetest.set_player_privs(playername, privs)
+	minetest.set_player_privs(player:get_player_name(), privs)
 end)
 
 minetest.register_on_player_hpchange(function(player, hp_change)
 	return 0
 end, true)
 
-function New(player,page1,page2)
+function New(player, world, level)
 	local player_inv = player:get_inventory()
 	player_inv:set_list("main", nil)
 	player_inv:set_size("main", 9)
 
 	local ar1 = {}
 	for i=1,9 do
-		for s in levels[page1][page2]:gmatch("[^\r\n]+") do
+		for s in levels[world][level]:gmatch("[^\r\n]+") do
 			table.insert(ar1, s)
 		end
 	end
@@ -99,15 +99,8 @@ function New(player,page1,page2)
 			minetest.set_node({x=i, y=k, z=-76}, {name="sudoku:wall"})
 		end
 	end
-	local a1 = 0
-	local a2 = 0
-	local a3 = 0
-	local a4 = 0
-	local a5 = 0
-	local a6 = 0
-	local a7 = 0
-	local a8 = 0
-	local a9 = 0
+	local an = {0,0,0,0,0,0,0,0,0}
+	assert(#an == 9, "oops")
 	for j = 1, 9 do
 		for i = 1, string.len(ar1[j]) do
 			local k
@@ -126,36 +119,17 @@ function New(player,page1,page2)
 			else
 				l = j+2
 			end
-			local pos = {x=k+13, y=(12-l)+8, z=-76}
+			local pos = vector.new(k+13, (12-l)+8, -76)
 			if string.sub(ar1[j], i, i) == "0" then
 				minetest.set_node(pos, {name="air"})
-			elseif string.sub(ar1[j], i, i) == "1" then
-				minetest.set_node(pos, {name="sudoku:1"})
-				a1 = a1+1
-			elseif string.sub(ar1[j], i, i) == "2" then
-				minetest.set_node(pos, {name="sudoku:2"})
-				a2 = a2+1
-			elseif string.sub(ar1[j], i, i) == "3" then
-				minetest.set_node(pos, {name="sudoku:3"})
-				a3 = a3+1
-			elseif string.sub(ar1[j], i, i) == "4" then
-				minetest.set_node(pos, {name="sudoku:4"})
-				a4 = a4+1
-			elseif string.sub(ar1[j], i, i) == "5" then
-				minetest.set_node(pos, {name="sudoku:5"})
-				a5 = a5+1
-			elseif string.sub(ar1[j], i, i) == "6" then
-				minetest.set_node(pos, {name="sudoku:6"})
-				a6 = a6+1
-			elseif string.sub(ar1[j], i, i) == "7" then
-				minetest.set_node(pos, {name="sudoku:7"})
-				a7 = a7+1
-			elseif string.sub(ar1[j], i, i) == "8" then
-				minetest.set_node(pos, {name="sudoku:8"})
-				a8 = a8+1
-			elseif string.sub(ar1[j], i, i) == "9" then
-				minetest.set_node(pos, {name="sudoku:9"})
-				a9 = a9+1
+			else
+				for q = 1, 9, 1 do
+					if string.sub(ar1[j], i, i) == tostring(q) then
+						minetest.set_node(pos, {name="sudoku:"..q})
+						an[q] = an[q] + 1
+						break
+					end
+				end
 			end
 		end
 	end
@@ -165,15 +139,10 @@ function New(player,page1,page2)
 		minetest.set_node({x=13+i, y=12, z=-76}, {name="sudoku:black"})
 		minetest.set_node({x=13+i, y=16, z=-76}, {name="sudoku:black"})
 	end
-	player_inv:add_item("main", "sudoku:n_1 "..(9-a1))
-	player_inv:add_item("main", "sudoku:n_2 "..(9-a2))
-	player_inv:add_item("main", "sudoku:n_3 "..(9-a3))
-	player_inv:add_item("main", "sudoku:n_4 "..(9-a4))
-	player_inv:add_item("main", "sudoku:n_5 "..(9-a5))
-	player_inv:add_item("main", "sudoku:n_6 "..(9-a6))
-	player_inv:add_item("main", "sudoku:n_7 "..(9-a7))
-	player_inv:add_item("main", "sudoku:n_8 "..(9-a8))
-	player_inv:add_item("main", "sudoku:n_9 "..(9-a9))
+
+	for i = 1, 9, 1 do
+		player_inv:add_item("main", "sudoku:n_"..i.." "..(9-an[i]))
+	end
 end
 function Fi(i,k)
 	local temp
@@ -201,9 +170,23 @@ function Fi(i,k)
 	end
 	return temp
 end
+
 function repeats(s,c)
 	local _,n = s:gsub(c,"")
 	return n
+end
+
+-- no idea what this does
+function does_thing(e)
+	return  repeats(e,"1") < 2
+		and repeats(e,"2") < 2
+		and repeats(e,"3") < 2
+		and repeats(e,"4") < 2
+		and repeats(e,"5") < 2
+		and repeats(e,"6") < 2
+		and repeats(e,"7") < 2
+		and repeats(e,"8") < 2
+		and repeats(e,"9") < 2
 end
 function Place(player,number,pos)
 	local dd = 0
@@ -216,20 +199,17 @@ function Place(player,number,pos)
 		ar[i-13] = temp
 	end
 	for i=1,3 do
-		if repeats(ar[i],"1") < 2 and repeats(ar[i],"2") < 2 and repeats(ar[i],"3") < 2 and repeats(ar[i],"4") < 2 and repeats(ar[i],"5") < 2 and repeats(ar[i],"6") < 2 and repeats(ar[i],"7") < 2 and repeats(ar[i],"8") < 2 and repeats(ar[i],"9") < 2 then
-		else
+		if not does_thing(ar[i]) then
 			dd = 1
 		end
 	end
 	for i=5,7 do
-		if repeats(ar[i],"1") < 2 and repeats(ar[i],"2") < 2 and repeats(ar[i],"3") < 2 and repeats(ar[i],"4") < 2 and repeats(ar[i],"5") < 2 and repeats(ar[i],"6") < 2 and repeats(ar[i],"7") < 2 and repeats(ar[i],"8") < 2 and repeats(ar[i],"9") < 2 then
-		else
+		if not does_thing(ar[i]) then
 			dd = 1
 		end
 	end
 	for i=9,11 do
-		if repeats(ar[i],"1") < 2 and repeats(ar[i],"2") < 2 and repeats(ar[i],"3") < 2 and repeats(ar[i],"4") < 2 and repeats(ar[i],"5") < 2 and repeats(ar[i],"6") < 2 and repeats(ar[i],"7") < 2 and repeats(ar[i],"8") < 2 and repeats(ar[i],"9") < 2 then
-		else
+		if not does_thing(ar[i]) then
 			dd = 1
 		end
 	end
@@ -242,20 +222,17 @@ function Place(player,number,pos)
 		ar[k-8] = temp
 	end
 	for i=1,3 do
-		if repeats(ar[i],"1") < 2 and repeats(ar[i],"2") < 2 and repeats(ar[i],"3") < 2 and repeats(ar[i],"4") < 2 and repeats(ar[i],"5") < 2 and repeats(ar[i],"6") < 2 and repeats(ar[i],"7") < 2 and repeats(ar[i],"8") < 2 and repeats(ar[i],"9") < 2 then
-		else
+		if not does_thing(ar[i]) then
 			dd = 1
 		end
 	end
 	for i=5,7 do
-		if repeats(ar[i],"1") < 2 and repeats(ar[i],"2") < 2 and repeats(ar[i],"3") < 2 and repeats(ar[i],"4") < 2 and repeats(ar[i],"5") < 2 and repeats(ar[i],"6") < 2 and repeats(ar[i],"7") < 2 and repeats(ar[i],"8") < 2 and repeats(ar[i],"9") < 2 then
-		else
+		if not does_thing(ar[i]) then
 			dd = 1
 		end
 	end
 	for i=9,11 do
-		if repeats(ar[i],"1") < 2 and repeats(ar[i],"2") < 2 and repeats(ar[i],"3") < 2 and repeats(ar[i],"4") < 2 and repeats(ar[i],"5") < 2 and repeats(ar[i],"6") < 2 and repeats(ar[i],"7") < 2 and repeats(ar[i],"8") < 2 and repeats(ar[i],"9") < 2 then
-		else
+		if not does_thing(ar[i]) then
 			dd = 1
 		end
 	end
@@ -266,8 +243,7 @@ function Place(player,number,pos)
 			temp = temp..Fi(i,k)
 		end
 	end
-	if repeats(temp,"1") < 2 and repeats(temp,"2") < 2 and repeats(temp,"3") < 2 and repeats(temp,"4") < 2 and repeats(temp,"5") < 2 and repeats(temp,"6") < 2 and repeats(temp,"7") < 2 and repeats(temp,"8") < 2 and repeats(temp,"9") < 2 then
-	else
+	if not does_thing(temp) then
 		dd = 1
 	end
 
@@ -277,8 +253,7 @@ function Place(player,number,pos)
 			temp = temp..Fi(i,k)
 		end
 	end
-	if repeats(temp,"1") < 2 and repeats(temp,"2") < 2 and repeats(temp,"3") < 2 and repeats(temp,"4") < 2 and repeats(temp,"5") < 2 and repeats(temp,"6") < 2 and repeats(temp,"7") < 2 and repeats(temp,"8") < 2 and repeats(temp,"9") < 2 then
-	else
+	if not does_thing(temp) then
 		dd = 1
 	end
 
@@ -288,8 +263,7 @@ function Place(player,number,pos)
 			temp = temp..Fi(i,k)
 		end
 	end
-	if repeats(temp,"1") < 2 and repeats(temp,"2") < 2 and repeats(temp,"3") < 2 and repeats(temp,"4") < 2 and repeats(temp,"5") < 2 and repeats(temp,"6") < 2 and repeats(temp,"7") < 2 and repeats(temp,"8") < 2 and repeats(temp,"9") < 2 then
-	else
+	if not does_thing(temp) then
 		dd = 1
 	end
 
@@ -299,8 +273,7 @@ function Place(player,number,pos)
 			temp = temp..Fi(i,k)
 		end
 	end
-	if repeats(temp,"1") < 2 and repeats(temp,"2") < 2 and repeats(temp,"3") < 2 and repeats(temp,"4") < 2 and repeats(temp,"5") < 2 and repeats(temp,"6") < 2 and repeats(temp,"7") < 2 and repeats(temp,"8") < 2 and repeats(temp,"9") < 2 then
-	else
+	if not does_thing(temp) then
 		dd = 1
 	end
 
@@ -310,8 +283,7 @@ function Place(player,number,pos)
 			temp = temp..Fi(i,k)
 		end
 	end
-	if repeats(temp,"1") < 2 and repeats(temp,"2") < 2 and repeats(temp,"3") < 2 and repeats(temp,"4") < 2 and repeats(temp,"5") < 2 and repeats(temp,"6") < 2 and repeats(temp,"7") < 2 and repeats(temp,"8") < 2 and repeats(temp,"9") < 2 then
-	else
+	if not does_thing(temp) then
 		dd = 1
 	end
 
@@ -321,8 +293,7 @@ function Place(player,number,pos)
 			temp = temp..Fi(i,k)
 		end
 	end
-	if repeats(temp,"1") < 2 and repeats(temp,"2") < 2 and repeats(temp,"3") < 2 and repeats(temp,"4") < 2 and repeats(temp,"5") < 2 and repeats(temp,"6") < 2 and repeats(temp,"7") < 2 and repeats(temp,"8") < 2 and repeats(temp,"9") < 2 then
-	else
+	if not does_thing(temp) then
 		dd = 1
 	end
 
@@ -332,8 +303,7 @@ function Place(player,number,pos)
 			temp = temp..Fi(i,k)
 		end
 	end
-	if repeats(temp,"1") < 2 and repeats(temp,"2") < 2 and repeats(temp,"3") < 2 and repeats(temp,"4") < 2 and repeats(temp,"5") < 2 and repeats(temp,"6") < 2 and repeats(temp,"7") < 2 and repeats(temp,"8") < 2 and repeats(temp,"9") < 2 then
-	else
+	if not does_thing(temp) then
 		dd = 1
 	end
 
@@ -343,11 +313,9 @@ function Place(player,number,pos)
 			temp = temp..Fi(i,k)
 		end
 	end
-	if repeats(temp,"1") < 2 and repeats(temp,"2") < 2 and repeats(temp,"3") < 2 and repeats(temp,"4") < 2 and repeats(temp,"5") < 2 and repeats(temp,"6") < 2 and repeats(temp,"7") < 2 and repeats(temp,"8") < 2 and repeats(temp,"9") < 2 then
-	else
+	if not does_thing(temp) then
 		dd = 1
 	end
-
 
 	temp = ""
 	for k=17,19 do
@@ -355,8 +323,7 @@ function Place(player,number,pos)
 			temp = temp..Fi(i,k)
 		end
 	end
-	if repeats(temp,"1") < 2 and repeats(temp,"2") < 2 and repeats(temp,"3") < 2 and repeats(temp,"4") < 2 and repeats(temp,"5") < 2 and repeats(temp,"6") < 2 and repeats(temp,"7") < 2 and repeats(temp,"8") < 2 and repeats(temp,"9") < 2 then
-	else
+	if not does_thing(temp) then
 		dd = 1
 	end
 	if dd == 1 then

@@ -28,13 +28,13 @@ function compat(storage)
 end
 
 -- Set world to singlenode if not already (umm yea)
-minetest.set_mapgen_params('mgname', 'singlenode', true)
+minetest.set_mapgen_setting('mgname', 'singlenode', true)
 
 -- Alias old "finisch" node to sudoku:desert
 minetest.register_alias("sudoku:finisch", "sudoku:desert")
 
 -- Alias some default nodes (because for some reason old sudoku had a flat mapgen outside the gated area)
-for _, node in ipairs({
+for _, node in ipairs{
 	'dirt_with_grass',
 	--'dirt', we still use dirt to store player data, don't ask me about it
 	'stone',
@@ -47,6 +47,6 @@ for _, node in ipairs({
 	'stone_with_mese',
 	'stone_with_diamond',
 	'gravel',
-}) do
+} do
 	minetest.register_alias("default:"..node, "air")
 end

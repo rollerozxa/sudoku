@@ -25,7 +25,7 @@ minetest.register_node("sudoku:meselamp", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	is_ground_content = false,
-	light_source = 15,
+	light_source = minetest.LIGHT_MAX,
 })
 
 for i=1,9 do

@@ -1,7 +1,7 @@
 
 -- Update appearance when the player joins
 minetest.register_on_joinplayer(function(player)
-	player:set_properties({
+	player:set_properties{
 		mesh = "character.b3d",
 		textures = {"character.png"},
 		visual = "mesh",
@@ -9,7 +9,7 @@ minetest.register_on_joinplayer(function(player)
 		collisionbox = {-0.3, 0.0, -0.3, 0.3, 1.7, 0.3},
 		stepheight = 0.6,
 		eye_height = 1.47,
-	})
+	}
 
 	player:set_local_animation(
 		{x = 0,   y = 79},
