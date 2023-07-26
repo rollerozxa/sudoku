@@ -23,15 +23,15 @@ function sudoku_hud_message.message(player, message, colour)
 end
 
 minetest.register_on_joinplayer(function(player)
-	huds[player:get_player_name()] = player:hud_add({
+	huds[player:get_player_name()] = player:hud_add{
 		hud_elem_type = "text",
-		position = {x=0.5, y=1.1},
+		position = {x=0.5, y=1.15},
 		offset = {x = 0, y = -210},
 		alignment = {x=0, y=0},
 		number = 0xFFFFFF,
 		text = "",
 		z_index = 100,
-	})
+	}
 end)
 
 minetest.register_on_leaveplayer(function(player)

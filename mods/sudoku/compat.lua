@@ -9,7 +9,7 @@ function file_check(file_name)
 	return file_found
 end
 
-function compat(storage)
+function compat(storage, player)
 	for i = 1, 5, 1 do
 		if file_check(minetest.get_worldpath().."/level"..i..".txt") then
 			local lv = io.open(minetest.get_worldpath().."/level"..i..".txt", "r")
@@ -24,6 +24,17 @@ function compat(storage)
 	if file_check(verfile) then
 		storage:set_int("mapversion", 1)
 		os.remove(verfile)
+	end
+
+	local player_inv = player:get_inventory()
+	local ll = player_inv:get_stack("ll", 1):get_count()
+	local l = player_inv:get_stack("l", ll):get_count()
+	if l ~= 0 and ll ~= 0 then
+		storage:set_int("current_world", ll)
+		storage:set_int("current_level", l)
+
+		player_inv:set_size("ll", 0)
+		player_inv:set_size("l", 0)
 	end
 end
 
